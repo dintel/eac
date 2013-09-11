@@ -8,7 +8,7 @@
 #include "lz77.h"
 #include "log.h"
 
-#define BLOCK_SIZE 4096
+#define BLOCK_SIZE 8192
 #define INITIAL_NW 32768
 #define DEFAULT_WINDOW_SIZE 32768
 
