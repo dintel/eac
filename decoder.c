@@ -9,7 +9,6 @@
 #include "log.h"
 
 #define BLOCK_SIZE 4096
-#define INITIAL_NW 16384
 
 const char *argp_program_version = "eac_decode 0.1";
 const char *argp_program_bug_address = "<dmitry.zbarski@gmail.com>";
