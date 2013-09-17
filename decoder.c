@@ -8,7 +8,7 @@
 #include "lz77.h"
 #include "log.h"
 
-#define BLOCK_SIZE 4096
+#define BLOCK_SIZE 8192
 
 const char *argp_program_version = "eac_decode 0.1";
 const char *argp_program_bug_address = "<dmitry.zbarski@gmail.com>";
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
     }
     
     decompressed_size += bit_string_writer_flush(writer);
-    printf("File size %ld decompressed file size %ld (ratio %f)\n",file_size,decompressed_size, (double)file_size / decompressed_size);
+    printf("File size %ld decompressed file size %ld (ratio %f)\n",file_size,decompressed_size, (double)decompressed_size / file_size);
     
     return EXIT_SUCCESS;
 }
