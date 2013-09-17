@@ -172,6 +172,10 @@ int main(int argc, char *argv[])
             bit_string_writer_write(writer,best_string);
             bit_string_destroy(best_string);
         } else {
+            if(arguments.window_size > buffer_string->offset) {
+                while(arguments.window_size > buffer_string->offset)
+                    arguments.window_size >>= 1;
+            }
             best_string = lz77_encode(buffer_string,arguments.window_size);
             PRINT_VERBOSE("Compressed using window size %zu compressed size %zu ratio %f\n", arguments.window_size, best_string->offset, (float)buffer_string->offset / best_string->offset);
             compressed_size += best_string->offset;
