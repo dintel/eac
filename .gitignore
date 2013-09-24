@@ -2,3 +2,5 @@ eac_encode
 eac_decode
 test*
 *.o
+doc/html
+doc/latex

@@ -1,20 +1,32 @@
 #include "lz77.h"
 
-bit_string_t *lz77_encode(bit_string_t *src, size_t nw)
+bit_string_t *lz77_encode(bit_string_t *src, size_t nw, bit_string_t *window)
 {
-    bit_string_t *result = bit_string_init(src->size * 3);
+    bit_string_t *result = bit_string_init(src->size * 4);
     size_t offset = nw;         /* Next bit to code */
     size_t first = nw;          /* First bit that was not coded yet */
     size_t lognw = ceil(log2(nw));
     size_t best_match, best_offset, current_match;
     
-    /* Write first nw bits as is without compression                     */
-    /* We write nw bits as is and decoder later uses this information to */
-    /* recover initial nw                                                */
-    bit_string_concat_and_destroy(result, cfc_encode(nw));
-    bit_string_copy(result,src,0,nw);
-    //DEBUG_PRINT("lz77_encode start nw = %zu lognw = %zu offset = %zu first = %zu src->offset %zu\n",nw,lognw,offset,first,src->offset);
-
+    if(window == NULL) {
+        /* Write first nw bits as is without compression                     */
+        /* We write nw bits as is and decoder later uses this information to */
+        /* recover initial nw                                                */
+        bit_string_concat_and_destroy(result, cfc_encode(nw));
+        bit_string_copy(result,src,0,nw);
+        //DEBUG_PRINT("lz77_encode start nw = %zu lognw = %zu offset = %zu first = %zu src->offset %zu\n",nw,lognw,offset,first,src->offset);
+    } else {
+        /* This is not a first block, so the window was passed to this
+         * function. Decode next block using that window as initial window. We
+         * do it simply by adding window in front of source bitstring. */
+        bit_string_t *tmp = bit_string_init(src->size + window->size);
+        bit_string_concat(tmp,window);
+        bit_string_concat(tmp,src);
+        src = tmp;
+        offset = window->offset; /* Next bit to code and first uncoded bit are */
+        first = window->offset;  /* now right after window                     */
+    }
+    
     /* After copying first nw bits we start main cycle. We go through our bit */
     /* string and search for matches in previous nw bits. If match is found   */
     /* and it is big enough >log(nw), then we compress it. Otherwise we check */
@@ -58,21 +70,40 @@ bit_string_t *lz77_encode(bit_string_t *src, size_t nw)
         bit_string_concat_and_destroy(result, cfc_encode(offset - first));
         bit_string_copy(result,src,first,offset - first);
     }
+
+    if(window != NULL) {
+        bit_string_destroy(src);
+    }
     
     return result;
 }
 
-bit_string_t *lz77_decode(bit_string_t *src, size_t size, size_t *enc_size)
+bit_string_t *lz77_decode(bit_string_t *src, size_t size, size_t *enc_size, bit_string_t *window,size_t *window_size)
 {
+    if(window != NULL) {
+        size += window->offset;
+    }
     bit_string_t *result = bit_string_init(size);
     size_t len, data_offset, offset = 0;
-    size_t nw = cfc_decode(src,&offset);
+
+    if(window == NULL) {
+        *window_size = cfc_decode(src,&offset);
+    }
+
+    size_t nw = *window_size;
     size_t lognw = ceil(log2(nw));
 
+
     PRINT_DEBUG("lz77_decode nw %zu lognw %zu\n",nw,lognw);
-    
-    for(int i = 0; i < nw; ++i) {
-        bit_string_append_bit(result,bit_string_get_bit(src,offset++));
+
+    if(window == NULL) {
+        for(int i = 0; i < nw; ++i) {
+            bit_string_append_bit(result,bit_string_get_bit(src,offset++));
+        }
+    } else {
+        for(int i = 0; i < window->offset; ++i) {
+            bit_string_append_bit(result,bit_string_get_bit(window,i));
+        }
     }
 
     while(offset < src->offset && result->offset < size) {
@@ -101,6 +132,12 @@ bit_string_t *lz77_decode(bit_string_t *src, size_t size, size_t *enc_size)
     }
 
     *enc_size = offset;
+
+    if(window != NULL) {
+        bit_string_t *tmp = bit_string_substr(result,window->offset,result->offset - window->offset);
+        bit_string_destroy(result);
+        result = tmp;
+    }
     
     return result;
 }

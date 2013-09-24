@@ -9,17 +9,22 @@
 #include "log.h"
 
 #define BLOCK_SIZE 8192
+#define MAX_NW 32768
+#define MAX_NW_DELTA 15
+#define NW_DELTA_BITS 5
 
+/** Decoder version  */
 const char *argp_program_version = "eac_decode 0.1";
+/** Email to send decoder bug reports */
 const char *argp_program_bug_address = "<dmitry.zbarski@gmail.com>";
 
-/* Program documentation. */
+/** Program documentation. */
 static char doc[] = "Entropy Adaptive Coding - decoder";
 
-/* A description of the arguments we accept. */
+/** A description of the arguments we accept. */
 static char args_doc[] = " -i INPUT_FILE -o OUTPUT_FILE";
 
-/* The options we understand. */
+/** The options decoder accepts */
 static struct argp_option options[] = {
     {"verbose",  'v', 0,      OPTION_ARG_OPTIONAL,  "Produce verbose output" },
     {"debug",    'd', 0,      OPTION_ARG_OPTIONAL,  "Don't produce any output" },
@@ -27,20 +32,21 @@ static struct argp_option options[] = {
     {"output",   'o', "FILE", 0,  "Output file" },
     { 0 }
 };
-     
-/* Used by main to communicate with parse_opt. */
-struct arguments {
-    int debug, verbose;
-    char *input_file;
-    char *output_file;
+
+/** \brief Decoder arguments structure */
+struct dec_arguments {
+    int debug;                  /**< debug parameter */
+    int verbose;                /**< verbose parmeter */
+    char *input_file;           /**< input file parameter */
+    char *output_file;          /**< output file parameter */
 };
      
-/* Parse a single option. */
-static error_t parse_opt(int key, char *arg, struct argp_state *state)
+/** Parse a single option of decoder */
+static error_t dec_parse_opt(int key, char *arg, struct argp_state *state)
 {
     /* Get the input argument from argp_parse, which we
        know is a pointer to our arguments structure. */
-    struct arguments *arguments = state->input;
+    struct dec_arguments *arguments = state->input;
      
     switch (key)
     {
@@ -74,9 +80,20 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
     return 0;
 }
 
-/* Our argp parser. */
-static struct argp argp = { options, parse_opt, args_doc, doc };
+/** Decoder argp parser */
+static struct argp argp = { options, dec_parse_opt, args_doc, doc };
 
+/**
+ * \brief Convert byte array into bit string
+ *
+ * Convert given byte array into newly allocated bit string.
+ *
+ * <b>NOTE:</b> It is user's responsibility to destroy bit string when it is
+ * not needed anymore.
+ * \param src source byte array
+ * \param size size of byte array
+ * \return newly allocated bit string
+ */
 bit_string_t *convert(uint8_t *src, size_t size)
 {
     bit_string_t *result = bit_string_init(size * 8);
@@ -89,9 +106,26 @@ bit_string_t *convert(uint8_t *src, size_t size)
     return result;
 }
 
+/**
+ * \brief Calculate new window size
+ *
+ * Calculate new window size based on current window size and delta
+ * value. Delta value is how many bits should be shifted right/left.
+ * \param prev current window size
+ * \param delta delta of window size \f$\delta = \log_2\left(\frac{\max\{nw_{n-1},nw_n\}}{\min\{nw_{n-1},nw_n\}}\right)\f$
+ * \return new window size
+ */
+int delta_nw_inv(int prev, uint8_t delta)
+{
+    if(delta > MAX_NW_DELTA) {
+        return prev >> (delta - MAX_NW_DELTA);
+    }
+    return prev << delta;
+}
+
 int main(int argc, char *argv[])
 {
-    struct arguments arguments;
+    struct dec_arguments arguments;
      
     /* Default values. */
     arguments.debug = 0;
@@ -99,7 +133,7 @@ int main(int argc, char *argv[])
     arguments.input_file = 0;
     arguments.output_file = 0;
     
-    /* Parse our arguments; every option seen by parse_opt will
+    /* Parse our arguments; every option seen by dec_parse_opt will
        be reflected in arguments. */
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
     log_verbose = arguments.verbose;
@@ -122,11 +156,12 @@ int main(int argc, char *argv[])
     }
     
     uint8_t *buffer = malloc(sizeof(uint8_t) * BLOCK_SIZE * 8);
-    bit_string_t *bs = bit_string_init(BLOCK_SIZE * 8), *tmp;
+    bit_string_t *bs = bit_string_init(BLOCK_SIZE * 8), *tmp, *window = NULL;
     long file_size = 0, decompressed_size = 0;
     bit_string_writer_t *writer = bit_string_writer_init(outfile);
-    size_t enc_size, buffer_size;
+    size_t enc_size, buffer_size, window_size;
     int i = 1;
+    uint8_t byte;
     while(!feof(file)) {
         buffer_size = fread(buffer,sizeof(uint8_t),BLOCK_SIZE * 8 - bs->offset / 8 - 1,file);
         if(buffer_size) {
@@ -134,29 +169,46 @@ int main(int argc, char *argv[])
             tmp = convert(buffer,buffer_size);
             bit_string_concat_and_destroy(bs,tmp);
         }
-        tmp = lz77_decode(bs,BLOCK_SIZE * 8,&enc_size);
-        if(tmp == NULL) {
-            break;
-        }
+        tmp = lz77_decode(bs,BLOCK_SIZE * 8,&enc_size,window,&window_size);
         decompressed_size += tmp->offset;
         PRINT_VERBOSE("Decoded block %d encoded size %zu decoded size %zu\n",i++,enc_size,tmp->offset);
+        if(window != NULL)
+            bit_string_destroy(window);
+        if(tmp->offset > MAX_NW) 
+            window = bit_string_substr(tmp,tmp->offset - MAX_NW,MAX_NW);
+        else
+            window = bit_string_substr(tmp,0,tmp->offset - 1);
         bit_string_writer_write(writer,tmp);
         bit_string_destroy(tmp);
+        if(bs->offset >= (enc_size + NW_DELTA_BITS)) {
+            byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
+            window_size = delta_nw_inv(window_size,byte);
+            enc_size += NW_DELTA_BITS;
+        }
         tmp = bit_string_substr(bs,enc_size,bs->offset - enc_size);
         bit_string_destroy(bs);
         bs = tmp;
     }
     
     while(bs->offset >= 8) {
-        tmp = lz77_decode(bs,BLOCK_SIZE * 8,&enc_size);
+        tmp = lz77_decode(bs,BLOCK_SIZE * 8,&enc_size,window,&window_size);
         if(tmp == NULL) {
             bit_string_destroy(bs);
             break;
         }
         decompressed_size += tmp->offset;
         PRINT_VERBOSE("Decoded block %d encoded size %zu decoded size %zu\n",i++,enc_size,tmp->offset);
+        if(window != NULL)
+            bit_string_destroy(window);
+        if(tmp->offset >= MAX_NW) 
+            window = bit_string_substr(tmp,tmp->offset - MAX_NW,MAX_NW);
+        else
+            window = bit_string_substr(tmp,0,tmp->offset - 1);
         bit_string_writer_write(writer,tmp);
         bit_string_destroy(tmp);
+        byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
+        window_size = delta_nw_inv(window_size,byte);
+        enc_size += NW_DELTA_BITS;
         if(bs->offset < enc_size)
             tmp = bit_string_substr(bs,enc_size,0);
         else

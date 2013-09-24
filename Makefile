@@ -39,3 +39,6 @@ clean:
 
 tags: *.c *.h
 	etags *.c *.h
+
+doc: doc/Doxyfile *.c *.h
+	cd doc; doxygen; cd ..

@@ -11,17 +11,21 @@
 #define BLOCK_SIZE 8192
 #define INITIAL_NW 32768
 #define DEFAULT_WINDOW_SIZE 32768
+#define MAX_NW_DELTA 15
+#define NW_DELTA_BITS 5
 
+/** Encoder version */
 const char *argp_program_version = "eac_encode 0.1";
+/** Email to send encoder bug reports */
 const char *argp_program_bug_address = "<dmitry.zbarski@gmail.com>";
 
-/* Program documentation. */
+/** Program documentation. */
 static char doc[] = "Entropy Adaptive Coding - encoder";
 
-/* A description of the arguments we accept. */
+/** A description of the arguments we accept. */
 static char args_doc[] = " -i INPUT_FILE -o OUTPUT_FILE";
 
-/* The options we understand. */
+/** The options encoder accpets */
 static struct argp_option options[] = {
     {"verbose",     'v', 0,      OPTION_ARG_OPTIONAL,  "Produce verbose output" },
     {"debug",       'd', 0,      OPTION_ARG_OPTIONAL,  "Don't produce any output" },
@@ -32,20 +36,22 @@ static struct argp_option options[] = {
     { 0 }
 };
      
-/* Used by main to communicate with parse_opt. */
-struct arguments {
-    int debug, verbose, eac;
-    size_t window_size;
-    char *input_file;
-    char *output_file;
+/** \brief Encoder arguments structure */
+struct enc_arguments {
+    int debug;                  /**< debug parameter */
+    int verbose;                /**< verbose parmeter */
+    int eac;                    /**< eac parameter */
+    size_t window_size;         /**< window size parameter */
+    char *input_file;           /**< input file parameter */
+    char *output_file;          /**< output file parameter */
 };
      
-/* Parse a single option. */
-static error_t parse_opt(int key, char *arg, struct argp_state *state)
+/** Parse a single option of encoder */
+static error_t enc_parse_opt(int key, char *arg, struct argp_state *state)
 {
     /* Get the input argument from argp_parse, which we
        know is a pointer to our arguments structure. */
-    struct arguments *arguments = state->input;
+    struct enc_arguments *arguments = state->input;
      
     switch (key)
     {
@@ -85,12 +91,23 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
     return 0;
 }
 
-/* Our argp parser. */
-static struct argp argp = { options, parse_opt, args_doc, doc };
+/** Encoder argp parser */
+static struct argp argp = { options, enc_parse_opt, args_doc, doc };
 
+/**
+ * \brief Convert byte array into bit string
+ *
+ * Convert given byte array into newly allocated bit string.
+ *
+ * <b>NOTE:</b> It is user's responsibility to destroy bit string when it is
+ * not needed anymore.
+ * \param src source byte array
+ * \param size size of byte array
+ * \return newly allocated bit string
+ */
 bit_string_t *convert(uint8_t *src, size_t size)
 {
-    bit_string_t *result = bit_string_init(size * 8);
+    bit_string_t *result = bit_string_init(size);
     for(int i = 0; i < size; ++i) {
         for(int j = 7; j >= 0; --j) {
             bit_string_append_bit(result, src[i] >> j & 1);
@@ -99,9 +116,28 @@ bit_string_t *convert(uint8_t *src, size_t size)
     return result;
 }
 
+/**
+ * \brief Calculate delta of window sizes
+ *
+ * Calculate delta between window size changes. Delta value is how many bits
+ * should be shifted right/left. \f$\delta = \log_2\left(\frac{\max\{nw_{n-1},nw_n\}}{\min\{nw_{n-1},nw_n\}}\right)\f$
+ * \param prev old window size
+ * \param next new window size
+ * \return delta between window sizes
+ */
+uint8_t delta_nw(int prev,int next)
+{
+    if(next >= prev) {
+        PRINT_DEBUG("delta_nw window increase %d\n",(int)log2(next / prev));
+        return log2(next / prev);
+    }
+    PRINT_DEBUG("delta_nw window decrease %d\n",(int)log2(prev / next));
+    return log2(prev / next) + MAX_NW_DELTA;
+}
+
 int main(int argc, char *argv[])
 {
-    struct arguments arguments;
+    struct enc_arguments arguments;
      
     /* Default values. */
     arguments.debug = 0;
@@ -111,7 +147,7 @@ int main(int argc, char *argv[])
     arguments.output_file = 0;
     arguments.window_size = DEFAULT_WINDOW_SIZE;
      
-    /* Parse our arguments; every option seen by parse_opt will
+    /* Parse our arguments; every option seen by enc_parse_opt will
        be reflected in arguments. */
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
     log_verbose = arguments.verbose;
@@ -137,8 +173,8 @@ int main(int argc, char *argv[])
     
     uint8_t *buffer = malloc(sizeof(uint8_t) * BLOCK_SIZE);
     int i = 1;
-    int best_nw;
-    bit_string_t *buffer_string, *tmp_string, *best_string;
+    int prev_nw = 0,best_nw = -1;
+    bit_string_t *buffer_string, *tmp_string, *best_string, *window = NULL;
     int buffer_size;
     long file_size = 0, compressed_size = 0;
     bit_string_writer_t *writer = bit_string_writer_init(outfile);
@@ -150,10 +186,11 @@ int main(int argc, char *argv[])
         PRINT_VERBOSE("Encoding block %d size %d bits\n",i++,buffer_size * 8);
         buffer_string = convert(buffer,buffer_size);
         if(arguments.eac) {
+            prev_nw = best_nw;
             best_string = 0;
             best_nw = 0;
-            for(int i = 2; i <= INITIAL_NW && i < buffer_string->offset; i *= 2 ) {
-                tmp_string = lz77_encode(buffer_string,i);
+            for(int i = 2; i <= INITIAL_NW; i *= 2 ) {
+                tmp_string = lz77_encode(buffer_string,i,window);
                 PRINT_DEBUG("Window size %d ratio %f\n",i,(float)tmp_string->offset / buffer_string->offset);
                 if(best_string == 0) {
                     best_string = tmp_string;
@@ -167,23 +204,42 @@ int main(int argc, char *argv[])
                 }
             }
             PRINT_VERBOSE("Best window size %d compressed size %zu ratio %f\n", best_nw, best_string->offset, (float)buffer_string->offset / best_string->offset);
+            if(prev_nw != -1)
+                bit_string_writer_write_byte(writer,delta_nw(prev_nw,best_nw),NW_DELTA_BITS);
+            if(window != NULL)
+                bit_string_destroy(window);
+            if(buffer_string->offset >= INITIAL_NW)
+                window = bit_string_substr(buffer_string,buffer_string->offset - INITIAL_NW,INITIAL_NW);
+            else
+                window = bit_string_substr(buffer_string,0,buffer_string->offset);
             compressed_size += best_string->offset;
             file_size += buffer_string->offset;
             bit_string_writer_write(writer,best_string);
             bit_string_destroy(best_string);
+            bit_string_destroy(buffer_string);
         } else {
-            if(arguments.window_size > buffer_string->offset) {
-                while(arguments.window_size > buffer_string->offset)
-                    arguments.window_size >>= 1;
-            }
-            best_string = lz77_encode(buffer_string,arguments.window_size);
+            /* if(arguments.window_size > buffer_string->offset) { */
+            /*     while(arguments.window_size > buffer_string->offset) */
+            /*         arguments.window_size >>= 1; */
+            /* } */
+            if(window)
+                bit_string_writer_write_byte(writer,0,NW_DELTA_BITS);
+            best_string = lz77_encode(buffer_string,arguments.window_size,window);
             PRINT_VERBOSE("Compressed using window size %zu compressed size %zu ratio %f\n", arguments.window_size, best_string->offset, (float)buffer_string->offset / best_string->offset);
             compressed_size += best_string->offset;
             file_size += buffer_string->offset;
             bit_string_writer_write(writer,best_string);
+            if(window) {
+                bit_string_destroy(window);
+            }
+            if(buffer_string->offset >= arguments.window_size)
+                window = bit_string_substr(buffer_string,buffer_string->offset - arguments.window_size,arguments.window_size);
+            else
+                window = bit_string_substr(buffer_string,0,buffer_string->offset);
             bit_string_destroy(best_string);
         }
     }
+    bit_string_destroy(window);
 
     compressed_size += bit_string_writer_flush(writer);
     printf("File size %ld compressed file size %ld (ratio %f)\n",file_size,compressed_size, (double)file_size / compressed_size);

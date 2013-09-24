@@ -104,10 +104,19 @@ void bit_string_copy(bit_string_t *dst, bit_string_t *src, int offset, size_t le
 {
     for(int i = 0; i < len; ++i) {
         if(dst->offset >= dst->size * 8 || offset + i >= src->offset) {
-            PRINT_DEBUG("ERROR in bit_string_copy!\n");
+            PRINT_DEBUG("ERROR in bit_string_copy (dst->offset %zu dst->size * 8 %zu)!\n",dst->offset,dst->size * 8);
             break;
         }
         bit_string_append_bit(dst,bit_string_get_bit(src,offset + i));
         PRINT_DEBUG("bit_string_copy copied bit %x\n",bit_string_get_bit(src,offset + i));
     }
+}
+
+uint8_t bit_string_read_byte(bit_string_t *bs, int offset, size_t limit)
+{
+    uint8_t result = 0;
+    for(int i = 0; i < limit; ++i) {
+        result |= bit_string_get_bit(bs,offset + i) << i;
+    }
+    return result;
 }
