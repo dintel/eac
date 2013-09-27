@@ -1,0 +1,27 @@
+#!/bin/bash
+
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
+
+for FILE in `ls files`; do
+    ../eac_encode -i files/$FILE -o test.lz77 $1 > /dev/null
+    ../eac_encode -i files/$FILE -o test.eac -e $1 > /dev/null
+    ../eac_decode -i test.lz77 -o test $1 > /dev/null
+    diff -q test files/$FILE
+    if [[ $? == 0 ]]; then
+        echo SUCCESS - $FILE.lz77
+    else
+        echo FAILED - $FILE.lz77
+    fi
+    ../eac_decode -e -i test.eac -o test $1 > /dev/null
+    diff -q test files/$FILE
+    if [[ $? == 0 ]]; then
+        echo SUCCESS - $FILE.eac
+    else
+        echo FAILED - $FILE.eac
+    fi
+done
+
+rm -f test.lz77 test.eac test
+
+IFS=$SAVEIFS

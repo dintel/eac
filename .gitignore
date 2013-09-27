@@ -1,6 +1,9 @@
 eac_encode
 eac_decode
-test*
+test
+test.*
+tests/files
+tests/result*
 *.o
 doc/html
 doc/latex

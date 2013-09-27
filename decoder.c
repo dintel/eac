@@ -28,6 +28,7 @@ static char args_doc[] = " -i INPUT_FILE -o OUTPUT_FILE";
 static struct argp_option options[] = {
     {"verbose",  'v', 0,      OPTION_ARG_OPTIONAL,  "Produce verbose output" },
     {"debug",    'd', 0,      OPTION_ARG_OPTIONAL,  "Don't produce any output" },
+    {"eac",         'e', 0,      OPTION_ARG_OPTIONAL,  "Use Adaptive Entropy Coding" },
     {"input",    'i', "FILE", 0,  "Input file" },
     {"output",   'o', "FILE", 0,  "Output file" },
     { 0 }
@@ -37,6 +38,7 @@ static struct argp_option options[] = {
 struct dec_arguments {
     int debug;                  /**< debug parameter */
     int verbose;                /**< verbose parmeter */
+    int eac;                    /**< eac parameter */
     char *input_file;           /**< input file parameter */
     char *output_file;          /**< output file parameter */
 };
@@ -62,6 +64,9 @@ static error_t dec_parse_opt(int key, char *arg, struct argp_state *state)
         break;
     case 'o':
         arguments->output_file = arg;
+        break;
+    case 'e':
+        arguments->eac = 1;
         break;
      
     case ARGP_KEY_ARG:
@@ -130,6 +135,7 @@ int main(int argc, char *argv[])
     /* Default values. */
     arguments.debug = 0;
     arguments.verbose = 0;
+    arguments.eac = 0;
     arguments.input_file = 0;
     arguments.output_file = 0;
     
@@ -139,9 +145,10 @@ int main(int argc, char *argv[])
     log_verbose = arguments.verbose;
     log_debug = arguments.debug;
      
-    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nVERBOSE = %s\nDEBUG = %s\n",
+    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
                 arguments.input_file,
                 arguments.output_file,
+                arguments.eac ? "yes" : "no",
                 arguments.verbose ? "yes" : "no",
                 arguments.debug ? "yes" : "no");
 
@@ -180,7 +187,7 @@ int main(int argc, char *argv[])
             window = bit_string_substr(tmp,0,tmp->offset - 1);
         bit_string_writer_write(writer,tmp);
         bit_string_destroy(tmp);
-        if(bs->offset >= (enc_size + NW_DELTA_BITS)) {
+        if(bs->offset >= (enc_size + NW_DELTA_BITS) && arguments.eac) {
             byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
             window_size = delta_nw_inv(window_size,byte);
             enc_size += NW_DELTA_BITS;
@@ -206,9 +213,11 @@ int main(int argc, char *argv[])
             window = bit_string_substr(tmp,0,tmp->offset - 1);
         bit_string_writer_write(writer,tmp);
         bit_string_destroy(tmp);
-        byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
-        window_size = delta_nw_inv(window_size,byte);
-        enc_size += NW_DELTA_BITS;
+        if(arguments.eac) {
+            byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
+            window_size = delta_nw_inv(window_size,byte);
+            enc_size += NW_DELTA_BITS;
+        }
         if(bs->offset < enc_size)
             tmp = bit_string_substr(bs,enc_size,0);
         else
