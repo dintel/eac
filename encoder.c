@@ -8,9 +8,9 @@
 #include "lz77.h"
 #include "log.h"
 
-#define BLOCK_SIZE 8192
-#define INITIAL_NW 32768
+#define DEFAULT_BLOCK_SIZE 8192
 #define DEFAULT_WINDOW_SIZE 32768
+#define INITIAL_NW 32768
 #define MAX_NW_DELTA 15
 #define NW_DELTA_BITS 5
 
@@ -27,12 +27,13 @@ static char args_doc[] = " -i INPUT_FILE -o OUTPUT_FILE";
 
 /** The options encoder accpets */
 static struct argp_option options[] = {
-    {"verbose",     'v', 0,      OPTION_ARG_OPTIONAL,  "Produce verbose output" },
-    {"debug",       'd', 0,      OPTION_ARG_OPTIONAL,  "Don't produce any output" },
-    {"eac",         'e', 0,      OPTION_ARG_OPTIONAL,  "Use Adaptive Entropy Coding" },
-    {"window-size", 'n', "FILE", 0,                    "LZ77 window size (ignored when --eac is used)" },
-    {"input",       'i', "FILE", 0,                    "Input file" },
-    {"output",      'o', "FILE", 0,                    "Output file" },
+    {"verbose",     'v', 0,            OPTION_ARG_OPTIONAL,  "Produce verbose output" },
+    {"debug",       'd', 0,            OPTION_ARG_OPTIONAL,  "Don't produce any output" },
+    {"eac",         'e', 0,            OPTION_ARG_OPTIONAL,  "Use Adaptive Entropy Coding" },
+    {"window-size", 'n', "FILE",       0,                    "LZ77 window size (ignored when --eac is used)" },
+    {"input",       'i', "FILE",       0,                    "Input file" },
+    {"output",      'o', "FILE",       0,                    "Output file" },
+    {"block-size",  'b', "BLOCK_SIZE", 0,                    "Block size"},
     { 0 }
 };
      
@@ -41,6 +42,7 @@ struct enc_arguments {
     int debug;                  /**< debug parameter */
     int verbose;                /**< verbose parmeter */
     int eac;                    /**< eac parameter */
+    int block_size;             /**< block size */
     size_t window_size;         /**< window size parameter */
     char *input_file;           /**< input file parameter */
     char *output_file;          /**< output file parameter */
@@ -73,6 +75,9 @@ static error_t enc_parse_opt(int key, char *arg, struct argp_state *state)
         break;
     case 'e':
         arguments->eac = 1;
+        break;
+    case 'b':
+        arguments->block_size = atoi(arg);
         break;
      
     case ARGP_KEY_ARG:
@@ -143,6 +148,7 @@ int main(int argc, char *argv[])
     arguments.debug = 0;
     arguments.verbose = 0;
     arguments.eac = 0;
+    arguments.block_size = DEFAULT_BLOCK_SIZE;
     arguments.input_file = 0;
     arguments.output_file = 0;
     arguments.window_size = DEFAULT_WINDOW_SIZE;
@@ -153,10 +159,11 @@ int main(int argc, char *argv[])
     log_verbose = arguments.verbose;
     log_debug = arguments.debug;
     
-    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nWINDOW_SIZE = %zu\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
+    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nWINDOW_SIZE = %zu\nBLOCK_SIZE = %d\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
                 arguments.input_file,
                 arguments.output_file,
                 arguments.window_size,
+                arguments.block_size,
                 arguments.eac ? "yes" : "no",
                 arguments.verbose ? "yes" : "no",
                 arguments.debug ? "yes" : "no");
@@ -171,7 +178,7 @@ int main(int argc, char *argv[])
         error(1, errno, "Could not open output file");
     }
     
-    uint8_t *buffer = malloc(sizeof(uint8_t) * BLOCK_SIZE);
+    uint8_t *buffer = malloc(sizeof(uint8_t) * arguments.block_size);
     int i = 1;
     int prev_nw = 0,best_nw = -1;
     bit_string_t *buffer_string, *tmp_string, *best_string, *window = NULL;
@@ -179,7 +186,7 @@ int main(int argc, char *argv[])
     long file_size = 0, compressed_size = 0;
     bit_string_writer_t *writer = bit_string_writer_init(outfile);
     while(!feof(file)) {
-        buffer_size = fread(buffer,sizeof(uint8_t),BLOCK_SIZE,file);
+        buffer_size = fread(buffer,sizeof(uint8_t),arguments.block_size,file);
         if(buffer_size == 0) {
             continue;
         }
@@ -236,7 +243,7 @@ int main(int argc, char *argv[])
     bit_string_destroy(window);
 
     compressed_size += bit_string_writer_flush(writer);
-    printf("File size %ld compressed file size %ld (ratio %f)\n",file_size,compressed_size, (double)file_size / compressed_size);
+    printf("%ld %ld %f\n",file_size,compressed_size, (double)file_size / compressed_size);
     
     return EXIT_SUCCESS;
 }

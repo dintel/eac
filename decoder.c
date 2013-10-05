@@ -8,7 +8,7 @@
 #include "lz77.h"
 #include "log.h"
 
-#define BLOCK_SIZE 8192
+#define DEFAULT_BLOCK_SIZE 8192
 #define MAX_NW 32768
 #define MAX_NW_DELTA 15
 #define NW_DELTA_BITS 5
@@ -26,11 +26,12 @@ static char args_doc[] = " -i INPUT_FILE -o OUTPUT_FILE";
 
 /** The options decoder accepts */
 static struct argp_option options[] = {
-    {"verbose",  'v', 0,      OPTION_ARG_OPTIONAL,  "Produce verbose output" },
-    {"debug",    'd', 0,      OPTION_ARG_OPTIONAL,  "Don't produce any output" },
-    {"eac",         'e', 0,      OPTION_ARG_OPTIONAL,  "Use Adaptive Entropy Coding" },
-    {"input",    'i', "FILE", 0,  "Input file" },
-    {"output",   'o', "FILE", 0,  "Output file" },
+    {"verbose",    'v', 0,            OPTION_ARG_OPTIONAL,  "Produce verbose output" },
+    {"debug",      'd', 0,            OPTION_ARG_OPTIONAL,  "Don't produce any output" },
+    {"eac",        'e', 0,            OPTION_ARG_OPTIONAL,  "Use Adaptive Entropy Coding" },
+    {"input",      'i', "FILE",       0,                    "Input file" },
+    {"output",     'o', "FILE",       0,                    "Output file" },
+    {"block-size", 'b', "BLOCK_SIZE", 0,                    "Block size"},
     { 0 }
 };
 
@@ -39,6 +40,7 @@ struct dec_arguments {
     int debug;                  /**< debug parameter */
     int verbose;                /**< verbose parmeter */
     int eac;                    /**< eac parameter */
+    int block_size;             /**< block size */
     char *input_file;           /**< input file parameter */
     char *output_file;          /**< output file parameter */
 };
@@ -67,6 +69,9 @@ static error_t dec_parse_opt(int key, char *arg, struct argp_state *state)
         break;
     case 'e':
         arguments->eac = 1;
+        break;
+    case 'b':
+        arguments->block_size = atoi(arg);
         break;
      
     case ARGP_KEY_ARG:
@@ -138,6 +143,7 @@ int main(int argc, char *argv[])
     arguments.eac = 0;
     arguments.input_file = 0;
     arguments.output_file = 0;
+    arguments.block_size = DEFAULT_BLOCK_SIZE;
     
     /* Parse our arguments; every option seen by dec_parse_opt will
        be reflected in arguments. */
@@ -145,9 +151,10 @@ int main(int argc, char *argv[])
     log_verbose = arguments.verbose;
     log_debug = arguments.debug;
      
-    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
+    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nBLOCK_SIZE = %d\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
                 arguments.input_file,
                 arguments.output_file,
+                arguments.block_size,
                 arguments.eac ? "yes" : "no",
                 arguments.verbose ? "yes" : "no",
                 arguments.debug ? "yes" : "no");
@@ -162,21 +169,21 @@ int main(int argc, char *argv[])
         error(1, errno, "Could not open output file");
     }
     
-    uint8_t *buffer = malloc(sizeof(uint8_t) * BLOCK_SIZE * 8);
-    bit_string_t *bs = bit_string_init(BLOCK_SIZE * 8), *tmp, *window = NULL;
+    uint8_t *buffer = malloc(sizeof(uint8_t) * arguments.block_size * 8);
+    bit_string_t *bs = bit_string_init(arguments.block_size * 8), *tmp, *window = NULL;
     long file_size = 0, decompressed_size = 0;
     bit_string_writer_t *writer = bit_string_writer_init(outfile);
     size_t enc_size, buffer_size, window_size;
     int i = 1;
     uint8_t byte;
     while(!feof(file)) {
-        buffer_size = fread(buffer,sizeof(uint8_t),BLOCK_SIZE * 8 - bs->offset / 8 - 1,file);
+        buffer_size = fread(buffer,sizeof(uint8_t),arguments.block_size * 8 - bs->offset / 8 - 1,file);
         if(buffer_size) {
             file_size += buffer_size * 8;
             tmp = convert(buffer,buffer_size);
             bit_string_concat_and_destroy(bs,tmp);
         }
-        tmp = lz77_decode(bs,BLOCK_SIZE * 8,&enc_size,window,&window_size);
+        tmp = lz77_decode(bs,arguments.block_size * 8,&enc_size,window,&window_size);
         decompressed_size += tmp->offset;
         PRINT_VERBOSE("Decoded block %d encoded size %zu decoded size %zu\n",i++,enc_size,tmp->offset);
         if(window != NULL)
@@ -198,7 +205,7 @@ int main(int argc, char *argv[])
     }
     
     while(bs->offset >= 8) {
-        tmp = lz77_decode(bs,BLOCK_SIZE * 8,&enc_size,window,&window_size);
+        tmp = lz77_decode(bs,arguments.block_size * 8,&enc_size,window,&window_size);
         if(tmp == NULL) {
             bit_string_destroy(bs);
             break;
