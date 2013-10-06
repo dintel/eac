@@ -1,0 +1,1216 @@
+Demon Internet Ltd
+==================
+Gateway House
+322 Regents Park Road
+Finchley, London, N3 2QQ
+0181-371 1234  (Sales - London)
+0131-552 0344  (Sales - Edinburgh)
+0181-371 1010  (HelpLine)
+0181-371 1150  (Fax)
+0181-371 1000  (Switchboard)
+email internet@demon.net
+
+MODEM.TXT - INFORMATION ON CONFIGURING A MODEM FOR CONNECTING TO THE
+INTERNET
+Last updated: 19 April 1995
+
+The latest version of this document is available from
+ftp.demon.co.uk:/pub/doc/Modem.txt
+
+
+Contents
+========
+
+1. General
+2. Essentials
+3. Telephone Exchange
+4. Internal Modems
+5. Which Phone Number
+6. Modem and Telephone Leads
+7. Serial Chips
+8. Speed
+9. Trouble Shooting
+10. Software and Other Factors
+11. Help for Specific Computers
+ 11.0. IBM PC Compatibles running DOS
+ 11.1. OS/2
+12. Individual Modem Settings
+ 12.0. Setting up a kind of modem not described below
+ 12.1. Setting Up a US Robotics/Miracom Modem
+ 12.2. Apple Express Modem
+ 12.3. BT NS 2232 M
+ 12.4. Dowty
+ 12.5. Dynalink
+ 12.6. Gateway
+ 12.7. Global Village
+ 12.8. Mistral
+ 12.9. Multitech
+ 12.10. Pace Microlin
+ 12.11. Pace Mobifax
+ 12.12. Racal
+ 12.13. Rockwell chipset modems
+ 12.14. SmartOne
+ 12.15. Supra modems
+ 12.16. Yoriko modems
+ 12.17. Zoltrix
+ 12.18. Zoom modems
+ 12.19. Zyxel
+13. Testing
+14. Finally
+
+
+1.   General
+============
+
+This document will point out some general essentials and advice on
+setting up your modem.  A section at the end discusses specifics
+regarding a DOS setup running the KA9Q NET.EXE program.  Due to the vast
+combinations of computer and modem setups it is impossible to give
+specific help for all types.
+
+Making an Internet (IP - Internet Protocol) connection via a modem is
+very different from a standard dial-up connection.  Do not assume that
+just because you can download from a BBS (and maybe upload) or use other
+services that you have your communication (comms) set-up 100% sorted out.
+Due to the nature of IP, if you get errors, throughput can be hit very
+badly.  Under IP information is sent in packets and for maximum speed
+these should generally be as large as possible up to a maximum of about
+1500 characters.  If a packet gets messed up (garbled) its entire
+contents will have to be resent - hence a large speed degradation may
+occur.
+
+One exception to this is when an interactive sessions are sharing a
+TCP/IP link with more voluminous transfers such as NNTP or SMTP.  In this
+case it can be preferable to have smaller transmission units (Maximum
+Transmission Units setting or MTU) so that keystrokes/screen updates will
+fit into the data stream with less delay.  If a large MTU is used this
+can lead to what feels like a jerky or intermittent session.
+
+Enough of the technical parts, there follows some sound advice that
+everybody should take note of.
+
+
+
+2.   Essentials
+===============
+          Correct modem settings:
+
+               Full hardware handshaking (CTS/RTS),
+               Flow control
+               XON/XOFF (software handshaking) set to off
+               Settings must be bi-directional where appropriate.
+
+         A full specification modem cable (open yours up - if it has
+         only 3 wires it is no good).
+
+         A serial chip that can cope with the high speeds (if using a
+         high speed modem).  Extended memory drivers and Terminate Stay
+         Residents (TSRs) etc. can interfere with the handling of
+         interrupts from serial chips.
+
+
+
+3.   Telephone Exchange
+=======================
+
+          The Demon Internet Service (DIS) is on modern digital exchanges
+          so you should have little trouble with ringing tones etc when
+          connecting to us.  If you are on an older exchange, your modem
+          may not recognise the dialling tone.  If this happens, look in
+          your manual and change the setting that overrides the dial tone
+          recognition.
+
+          Note that when you make changes to a modem's settings you
+          should always reset the modem first, make the change and then
+          save the settings.  You will need a comms or "terminal
+          emulation" package such as Telix, Procomm, Window's Terminal, Z-
+          Term, Microphone etc.  Look in your modem manual for
+          instructions.  Mostly you will be able to type ATZ <return> to
+          reset your modem.  On a US Robotics/Miracom modem you could
+          type:
+
+          ATZ            Reset the modem
+          ATX3           Alter a setting
+          AT&W           Write the settings to Non-Volatile RAM (NVRAM)
+
+          The last bit (AT&W) is useful as it means that when the modem
+          is reset, it will remember the settings you have stored.
+
+          If going through a private telephone network (or PABX) first,
+          you will probably need to dial a number such as 9 to get an
+          outside line.  Make sure your dial string has this in.  You may
+          need to separate this from the number to dial by a separator
+          such as a comma so that there is a pause to give your telephone
+          system time to give you an outside line:
+
+          9,01813434848
+
+
+
+4.   Internal Modems
+====================
+
+          Internal modems have the advantage of not having a serial lead
+          to worry about but the disadvantage of using an extra interrupt
+          and generally don't have any lights to let you know what is
+          going on.  Ensure that the interrupt on which the modem sits
+          does not interfere with any others - refer to the setup program
+          for your computer and your modem manual.  This may require
+          altering a jumper (a small connector) on the main computer
+          board (mother board) on your computer or on a separate board.
+          This should be well documented and is well within the scope of
+          the average user.  Ensure that the modem is seated correctly in
+          the expansion slot.
+
+
+
+5.   Which Phone Number
+=======================
+
+          We have multiple Points of Presence (PoPs) - please see
+          /pub/doc/Demon.txt for details.  Thus you will have a choice of
+          numbers to ring.  You may use any of our PoPs at any time.
+
+
+
+6.   Modem and Telephone Leads
+==============================
+
+          Your modem lead should be in good condition and preferably not
+          wrapped in a tight circle or running parallel to high power
+          cables etc.  This will normally only affect longer runs and, as
+          your cable should be earthed, will not often be a problem.  The
+          cable should be connected securely at both ends as should the
+          telephone cable.  If you suspect your telephone socket may be
+          causing a problem then test it with a standard plug in
+          telephone.  Use the correct type of modem lead - they vary from
+          country to country.
+
+
+
+7.   Serial Chips
+=================
+
+          The type of serial chip (Universal Asynchronous
+          Receiver/Transmitter - UART) in use can make a big difference
+          to comms performance/reliability.  At higher speed the computer
+          can sometimes not service the serial chip fast enough to catch
+          all of the characters arriving down the line.  This problem
+          increases if running under a multi-tasker such as Windows,
+          certain memory managers and other TSRs.
+
+
+
+8.   Speed
+==========
+
+          Close to every modem user's heart is the speed at which they
+          can operate.  There are two different speeds: the first is the
+          speed at which a modem can talk to another modem; the second is
+          the speed at which the modem can talk to its controlling
+          computer (the DTE rate).
+
+          Firstly, we will discuss the connect rate.  A V.22bis modem can
+          connect at a speed of 2,400 bits per second.  There are 8 bits
+          in a byte (a byte is usually one character) so that is a
+          maximum of 300 characters per second (cps).  Due to start and
+          stop bits, each byte will take 10 bits reducing the speed to
+          240 characters per second.  When running over IP there is a
+          slight overhead and so you will never see this maximum.
+          However, as you can (and will) have several things happening at
+          once, you will be able to make very good use of your available
+          bandwidth.
+
+          Many modems have compression protocols built in to them.  MNP/4
+          and V42 use synchronous connections to provide an error free
+          connection between modems, saving the start and stop bits.
+          This gives at least a 20% increase in throughput.  V42bis adds
+          compression, provided that the DTE rate is higher than the
+          connection rate.  This means that when downloading a plain text
+          (or ASCII) file, it is possible to get faster speeds by
+          compressing the data.  The data is compressed so that the same
+          information can be encoded in to a smaller space.  The
+          receiving modem will of course unscramble the data for you.  If
+          news normally flows in at say 200 cps, then, on a 2400 cps
+          link, you have up to 44 cps left at the same time for mail,
+          telnet'ing, ftp'ing etc.  Compression techniques do not work as
+          effectively on binary files and make very little difference to
+          pre compressed files (such as .zip, .zoo, .lha etc.).
+
+          Note that MNP5 will usually degrade throughput on an IP link
+          due to the packet based nature of it's compression method.
+          V42bis does not suffer this problem as it is capable of
+          optimising itself dependent on the type of data being
+          transferred.
+
+          Now we will discuss the second speed - the speed at which the
+          modem and computer communicate with each other.  This is called
+          the Data Terminal Equipment (DTE) rate.  If you have a slow
+          modem, e.g. a 2400 baud one without MNP or V42, then it will
+          probably only work correctly when talked to by the computer at
+          the same speed.  For the facts on your particular modem and
+          computer you should refer to your manuals.  On faster modems
+          you will only be able to take advantage of some of the
+          compression features by making the computer talk to the modem
+          at a faster speed than modem is talking to the remote modem
+          down the telephone line.  Thus you should talk to a 9600 modem
+          at 19200 or even 38400.  You should check the maximum speed at
+          which the serial port on your modem can talk and then set your
+          communication package to work at the highest mutually available
+          speed.  Don't forget that without a buffered UART you are
+          unlikely to sustain reliable high speed comms above 9600 baud.
+
+          Please note that we only support modems capable of V22bis
+          (2400) and upwards.  If you have a US Robotics/Miracom HST
+          modem, you may not get very good throughput in HST mode.  In
+          practice HST mode is fine if FTP'ing from a site without
+          anything else happening (sending mail etc.) as it works fine in
+          one direction at a time only.
+
+
+
+9.    Trouble Shooting
+======================
+
+          If you are getting garbled characters on the screen then
+          something is wrong!  Garbled characters are often a sign of
+          mismatched speeds, lack of handshaking or a non-locked DTE
+          rate.  If you get as far as the login prompt but no further
+          then make sure that your dialler script is working on 8 bit
+          standard comms: 8 bits, no parity, 1 stop bit. See
+          /pub/doc/Demon.txt for the full logon script details.
+
+          Having checked your setup according to the information above,
+          try reducing the speed at which the computer talks to the modem
+          (if using a high speed modem) until the connection works.  If
+          you have to do this then either you are attempting to drive
+          your computer or your modem at too high a speed, or you have
+          other processes running which interfere with the correct
+          running of your serial communications (as per Serial Chips
+          above).
+
+          If you have finished your live session and log off you may
+          sometimes find that your phone line is not dropped.  This can
+          result in an unwelcome phone bill!  There are a number of
+          computer/software specific solutions to this problem and some
+          answers are given in /pub/doc/Support.faq which may have been
+          included in your installation.  One thing to check on your
+          modem is that the setting that makes the phone line drop when
+          the computer tells the modem that it has finished, is on.  The
+          computer uses the serial port and drops DTR (Data Terminal
+          Ready) and the modem spots this and hangs up the line.  The
+          setting often &D2 and you should read the section below which
+          tells you how to set this.  It is definitely &D2 for US
+          Robotics, SupraFax and Dowty Quattro modems.
+
+          If your modem sometimes seems to fail to recognise a ringing
+          tone, reporting it as BUSY.  This can be cured by adding a
+          comma after the dial number, e.g. "ATDT0813434848,".  This
+          makes the modem pause and ignore the first rings which it
+          sometimes things is a busy single.  Some US Robotics modems can
+          exhibit this problem.
+
+          ATZ is the command that resets the modem.  Setting your
+          initialisation string to ATZA0 etc where A0 is the
+          initialisation string is very likely to fail.  This is because
+          the modem takes a while to reset and throws away the data being
+          sent to it in the meantime.  Some people beg to differ on this
+          point.  However it is certainly true on US Robotics modems.
+
+          Just to confuse matters further there are often some switches
+          on the modem which you can use to make further settings or to
+          default to different options.  These are referred to as DIP
+          switches.  Mostly, the advice contained in this document,
+          refers to modems that have not had their switches tampered
+          with.  If you have the manual for your modem (and I hope you
+          have!) then that will probably tell you what the default
+          factory switch settings were.  Make a careful note of the
+          current settings and then change back to the factory defaults.
+          If you already use your modem with other packages, make sure
+          they still work.  These DIP switches must be set to ensure that
+          the reset command ATZ resets the modem to the stored values.
+          On some modems it is possible to make ATZ restore to factory
+          settings which rather defeats the object of configuring it!
+          Some modems have ATY commands instead of DIP switches and so it
+          is important that the correct ATY command has been used.
+          Fortunately, the default will ok if no ATY command has been
+          issued.
+
+          If you are getting a no response from the modem before dialling
+          (eg. The dialler in KA9Q reporting "INPUT LINE WAIT 3000 OK")
+          then that means that either your modem is not connected
+          properly (check the cables, or for internal modems, check
+          jumper settings, and check software configuration to check that
+          the dialer is trying to talk to the modem on the correct port),
+          or your modem is not configured for verbal result codes.
+          Normally the command to accomplish this is ATV1 .
+
+          There is a section below which specifically refers to problems
+          that may be encountered by PC users.
+
+
+10.  Software and Other Factors
+===============================
+
+          By configuring your software correctly you can make significant
+          improvements to an under performing communications connection.
+          Things to check for include badly fragmented disks (run a disk
+          de-fragmenter such as Norton's Speed Disk), no disk cache, no
+          or insufficient buffering inside the software and unnecessary
+          checking protocols or indexing taking place.  Refer to your
+          software's instructions for details on these.
+
+
+
+11.  Help for Specific Computers
+================================
+
+    Some extra comments for some operating systems which may be of use
+    follows.
+
+
+    11.0.     IBM PC Compatibles running DOS
+    ========================================
+
+          In addition to the above info there is some specific advice
+          below for those of you running DOS.
+
+          Some modems send back "OK" when sent ATZ (the reset command)
+          even though they are not ready.  This means that the dialer
+          program will try to ring out even though the modem is not
+          ready.  The effect is that you will see ATZ on the screen
+          followed by OK and then the program will not dial.  Eventually
+          it will time out.  To avoid this, send AT instead of ATZ in the
+          modem initialisation string.
+
+          Extended memory drivers can interfere with the correct
+          operation of your serial communications.  If you suspect this,
+          rename your CONFIG.SYS and AUTOEXEC.BAT files and then reboot
+          your computer to see if the connection improves.
+
+          If you have a V.32bis 14,400 modem you will probably want to
+          talk to it at 38,400.  Unless you have a suitable serial chip
+          then you will get errors and, as explained at the start of this
+          document, this can seriously impact the throughput.  When
+          running NET.EXE you can type asystat at the net> prompt and
+          information about your serial comms will be printed to the
+          screen.  The interesting parameter is the third one on the
+          second line, 'hw over'.  This shows how many hardware overruns
+          (characters lost because they weren't fetched from the serial
+          chip in time) have occurred.  These overruns are usually due to
+          lack of either a buffered UART or hardware handshaking.
+
+          As already stated, for maximum performance you will need to
+          have a buffered chip.  For this you will need a 16550A - this
+          is the number that is written on the chip.  The asystat command
+          will tell you if a 16550 is detected.  Unfortunately, even top
+          manufacturers overlook this area so it is quite likely that
+          your chip is below par.
+
+          If in doubt, open up your computer and locate the serial chip.
+          If it is not a 16550 then it might need replacing.  If you are
+          handy with a soldering iron you could replace it, but this is
+          not advisable unless you are really confident.  If the chip is
+          socketed then it can be removed and a 16550 (costing about #16
+          - we sell them) be put in its place.  If not then you could buy
+          an extra serial card with a 16550 already on it costing from
+          around #30 to #70 depending on the specification.
+
+          Some internal modems use a 16450 with a large buffer (1K) and
+          this may be enough to stop hardware overruns.
+
+          If you are using a standard serial port then the settings
+          offered for COM1, 2, 3 or 4 in the configuration program in
+          DIS.EXE will probably be fine.  Otherwise you should refer to
+          your manuals and enter the appropriate IRQ number and I/O base
+          address.
+
+          If you install an extra serial card then be aware that if you
+          have, for example, a mouse on COM1 then you should not use COM3
+          for your modem using the default IRQ setting as they share the
+          same interrupt.
+
+          There is another factor that can impede throughput and that is
+          software overruns.  Using the NET.EXE software, at the net>
+          prompt having just received some news or ftp'd a file, type
+          asystat and look at the figure before sw over.  If this is not
+          0 then you are getting software overruns.  To fix this,
+          increase the buffer size in the attach line near the top of
+          autoexec.net:
+
+          attach asy 0x3f8 4 ppp sl0 4096 1500 38400
+
+          Alter the 4096 in the above to be 8192, 12288 or higher until
+          the software overruns are cured.
+
+          More information on tuning is available in
+          /pub/doc/ka9q/Tuning.faq.
+(ùº)bã³.5¨5'œ‰É×÷°Í ´{XQuÈw‘‡‚N1ÿÅÓş	Í= )î°)*MÁ!É†`Èqr¾ã‡EÑU4r§ƒ^smN¥úï‘‰Ï›z{¶ÓCÍBÆ1µ[óÅjëÏ.è›|òÏ‹6›À¨zˆ¸gÍ´ëãî^4õä™;N„sø!n­Ù·.®¼·œ=]®.Îúà”‹®ĞFTWˆ=÷õ´ó>Jõi{©._ÎØ0vl+½à6|¢±DdOÏ†1r­”ƒàmò‚´”SŞı{>qDZÚ#(Œf¥ã{“àŒ-.ÆÈ3©[Û6Ğ§A„
+SßÈ1Ôn†Œ“‘¼ÜºB›XÎ¶|ü–9fz,GdÀ…43 k!½BEŒ,7ùªŒ¯‰!ôÊ¶“b=¨(¾ZÖú @LÎ>ÈødUuŞåàh\¾´;õWD©,nÌ9µë$rjvQ#(Û‹ÏÀl6CsÚ~n²óËOüô#%DK¤ YG{ºÌ·ÉãÊEå/¦9ÄˆëÕ$i]äLŞ××â"Í~õÏçg&üBhÏYQ/~³Ÿñ»¸:ãM"V÷±Çw_,öûåbRµ³
+®Ï `í1—‡
+Z¤ÔÉJ•c¬ò=•6y	4åaV“´ÃŠ±æì7×="¯R”½€¡nØeÒÿ/µúgz¬Î©EØ‰wÕ³q3ı±XÈeëcI°¢3u‡˜ƒt8®!0 ”×/Â m·Ÿnˆ[Öy®NÜvT¸ OË"5ÕÑ­Ô›0Äy›²f/G…Åï…ˆÀ#|œ<B[`8/­…’LwnhÎFOÕ”©&:<­šÔ‡³3¯íj~N‰°÷âì¦’¨PâtŸ 2û°MÚµÃ—ĞçóüÃ8É=6ÿÈãê7{|7XI , (Íı1·5WpÌú+iÅÕíäF±,ìÃÄ³a;šM´­ê ÷v
+%	J]\¶TØT½/œ5vjoJ|°
+1”Ğ†$ÆÆôâTó÷¿€)Bø¥ŸıPÄÖi}œ—‹İ·Œ(/Î7úº‰±1#¼%ÿ@d>x±á¤!N$ÈÕyö ‹-1õmŠÿ§Å¼Dğ_<ÿb¾Ö¾‘‡¾³åaB1=½ösŒ ÷è‹`×ŠÁÂlÆNÖÆªÄ$ÄŞWá€1¯Ò—QÇ£Snriµ_ûölí<s»·¦”.2‰áï}è µ¸xÀ×”ém¢ˆÖz=)9mí!ó²&[fi0ù‹0s]>p2æw^º°ØÜİ‰Q6€ÎË©ÏvpÇ‡?;©­[#
+ìâ˜5B¾¹J¡Ò¸n©§IŸİ§OO‰ASÕˆmo¥gv¹ı¿§®ä†B@‹Ó[nc!1P»Œ¤ªP&¸X3O6¾80r»<éÔ·‹±Øn¨¨]ÀHøXÔı
+>„õZ¢ƒø6ªg¤ôbN5L;ë¬&ïk3¯>¦€`g¾Èzë®:zì=4rzv,‰.G[{_Î\1	xf¯*çåğü^zaıÈº»áÇLgüíe¡©D-7ĞÉŒ·‘Cãƒ{]lwæâ¡« ø£8!bó<Ü ŠåŒåK„w,í–#Q´gØCù¯¨èšÉYküJ°Dx¹ëS’>ğW­İ4ÊC§ğş·Koÿgvå‘ÈëÇöö=)Z¹Ÿv§Èqkµ\XÆ·—oçàÌÍwAÕAÏthÎRÇåÒ
+~øÏZTÈ$İ>´¡×8%ğ…à¤®ŸX{+ÔÙmR‚¹¦ğ´óú_6ûŠ¿¥÷*›ä‚©@{PÜÅñ¦êàr¥3òL|r_ìÈèu)EFSj,»Ş~tpª<ÚW¯\¾gàCfY‚°ê?Å;ğ¨bÁ¤W~Qn?Úh„¨}äiR
+ÖæU-ùõA!6ñı9>•Û÷ßlÕQú6#øÁäïsu×"_˜‹q[t÷Ìİ¤Ië±7‘6›Š±ºÒQÍÈ b.æ¾ÆTiÜ(2ÕÆ9^X3(½;é_¬ùw<~ x†êîï˜—˜õI°d*.±7Tçï“Ş––‘‡¯áØÏ½@©[gyù?qQFúº˜À¨NuòĞíİ’ªæ.’ƒ¼)úwû"Ì»zäÒJç›Œ•<˜’WFõ/ñÓ”RİîûÍ´ng¨#B‘Lô1Qá¹;.M<W–õeÒ_J<ô`Ï»K¦ÆV:öäUUr!ª=…†ËHG2?„>ƒ$„ÔÆ@ñ¿¬± ´‰*ùîÄú§¤•3”‰¯é@ä¦Óµİjš¤ü›Jhë•¶ÎZ-şNLYs²îI#µ¢jØ™OsÍÍZÔ°Cq—ş<gJû‘1¸%-gÛ•Zèj,]+üEMŠp7´#,o?;ßû.½&(4¬w¬rÎ|-ö¦÷ Elæ¬èo,¨·¡_ÓBµÜm~êî´Ù®°•wUP\ğú{Ğ¶ù¸02íO\›wPŸmo1=ü«ÃÌ7Â©vœùW€æ Š/V²zhâ"À%¤ğO›êuN[
+[³½å=±€Lğñ/h+ÈÎ!U9A~ÔZŒÀVYÇV$ıÛÓ³Põ#'·¸rW¡ö5«ÕƒÜÈÅ`»‘C|µèlÈSÇƒÅ~ÖñŸã
+7c]f	±ÓÃb[‘­<U’²)«ûl	jÚ^¶îsknÜê9õÅÔÃ—ş ód TI³^W,cPh}¢û¿™¹
+_6q­¢!¶GhY^Ñ]8ÄŞû,–%¯ép;*m2_ıÎ•Q;w[¯×¨Y÷Õâ¾Eóq
+·¦‚høN.Ì‹Š±Şï­Øî¶ÕM*Ü~}¸ÙÚ´1l/8¥êäUbğôÛîîâwÅZö6¯‚˜–˜rL—ÖÑ¬× JXJ°°üÁî÷d€°Gï¸q§„0·‘*›^61'‹x6{o¤¸]Á İº7œ)‡Ó»§–B`+şşàXY{ãqoB…*Âù»zEÛ”¥³hBC_7V^šŞ)‡ïë&PÉŸ(¯¦Ú.°¯ÕrÆÎÃ&näSò è£ìÃ4‘¾_ë=×*ñ[äd`°Öşb}UtÜv¾“¦uÚà(?÷mÁÀ‰íÍƒ“ñAh«š›ªÒ«Ö*$»±æwı‚7È(Èa€6O÷ûÓeL›û9¯üŒó¿{Ñøñ+?õzÊämĞ“¾9È
+`la²Xƒ{ÆÚ„ÿİ§'í]æ4íÍ<>Áh"+ˆà¿gäy÷¬…E:ÖqŒì
+õYÈ¡ÅÕ.ô²,ídÇWLH³“u¹iŸ¯
+ÎFLÍÇ}t]*…Š/‡¹¡Ş'Kp‹ß`ü	ö{82,«Ùı‘À¼UÚÜÿ¾ÊqÎ¾c8QârÓ‰7JìÃ¾uªz¥t!¡$*@s~FñÎ¶Õ”ÂŠÓDé°ŸÕ¹'oªç¤Ş¦×ñÏ&R­V<¯^EYYq§n$Hö·H™¢ZÑ¼£Ñk=š‹‡>¬\L 7¾z»`AØNÊÕîA&è,äÊ
+}Ø€„–Ú:Š\¿%:û3WgËBgJÒ,÷¬94©5ÙŒól	{» 5 .ù@×‹ ş¥Û¢Æ$¤‘%ÔÅßª%»òŒã¾xTíº§£yêBÇèóª8™ŸùS1ítcyÙ]}Õ
+6w’xÉü·èWv¹.)ĞÍø7eCmœ@½$·²‹ŠùÎP#ZJĞ­»[â—~ğƒ¼tàşdñµobì‘ô˜apä8ú‡—úú¢rs34LU å!Ê	ƒ kÛåÙà6ş%W[bmN{¾¹ÿ_Ù¾Ãm”f¦W("héªT>%MÎğt¢?jBÅ÷ç	Ï GşR=’Ã,¾QNsy°oê¸æÌR¼Ôå¡Sğ¶Hí’IÒ"b§cjø5Ônùœ:Ç#ÃŞà¶ó*ô>‡1PÇïŞo\8ãs€Í	‰ğX»ìÆÃ­°áúTøI`‰—éûŸDA eV]ƒ6ŒtP*<ç¥`pésÆÌ#ÕàH}s\"ä= Ç—¾µçCüè"ò"ü«…K²·jq³Ú–gw¹±òS[‰1xWßù‘-à%/Õ14¯kP4e!a3æ'ô£÷’Á©4ÜòB)¨§ö{aq0T¸Ñ=Ï.r„yı``¸x ‘ïé!Næ«Ô,¹FuäUo]ÓúªóÎ*¸à0‚DFzım,$Ù{s6TŒT÷Éæ~X”^oÎÏƒV+î”F.`3²§¥ºqw`V )çƒıH2¶kdå{Ó®ÿŸ,X¥	A5&.¡%¥ˆä¥ ZJƒÏªsvµÉêèİ ÑÒrtÒ&ıšPãc½¶âÚ½¦5´(0üÿÁDÚ®d©.¬™&¾¢NÃƒï3òÀ¾×eSÒ.‘—¾Xşù1?8#tq\3@òƒ-™c	†=ùf+-,c—
+_è¶ê±—ƒĞ¬dÙ¿ëCÓàqH!PC1k:"uĞ÷Eb¦Æní<Û`R ô)ò’e2tZ|[y$rç\¬†Š©âCÉäö1|cıâ7kŠ·S´÷¶œ•@y(¥×‰hĞû2;SÁ±ğPÌÏrE8I·VhJ†ÜNKìÚ`ÿÌ>š½Ş¬Aúµhİ&é_eŞyºH`(–šÁ»ò1 ©!ª<¶./†(ò¢¯l)mü¯)ƒ•?Èôx{¹K<Zv[Ùco9sŒ*bPÀ’ÛpÕuD“oM9‰LÛ^pı¶ÙËÉFå c^?ª(j'ñÏ‘Qâqz;•+¢8+‰'1\Àw¼ÄfÒ7ø	ŸÙŠûªEH©İƒ2Ô-5¶Ì’â~²äàzğRx$¹cò¼"*]sŒ×LCßï„)ÈéIs!:°¸€/ƒã6*`«6K?¾Å&ø‹›!»ßä×ö¨³¹ÀŞçµJÉˆFĞ]µíúm¤¹Jbë#ñ@«{Á±ÚV/šáxĞsç·,x?x‘üÏ¦¬9½#‡'h/Çyµ±æ·NH‘“øLg£ïÍNn/®NòO¥×dĞ+óø§ªzİz$,ìÄÊè[ï«¢–q;61FùS$ü³K‘õzS`Mfã0ñ	˜ Mş°ï!5 ¹8i;yš{o
+/ºµø4bğiå£qÖœ)uİK€;e™so}/çx¡ÑYï~¿qôgßÂAåT«/!x´&8ì{Øä¢eğj ¦ÍÚ&²¼8SÆßôˆ¹fÌ\^]“”ŠJ€)ìû]NİOOÓ9‚íş²4kYŠÊ{Ä¦/ínx+©üşÇñÊ£­ÜZhÇ®Ûòùî$“fì&	N—ÛÓ-ìE‡Â3‰Œo³ıîÓUš,{ÍxÅO7~İ¯ô„Ö](H8Å÷ZåÁ(ñvq‘2Şm¾²¬¢U¾Dª“>Æâ–¾[û¥7.Pj’Î}»dâôO~{e©8À—|ø@ğmöp8[ŸŠY¡¨.XÛÊ4…úÌûÃ‚ñ8	öòÛ2ƒí]g]Z˜äÄJo”Ñ1u†ªôÔ¡8/®ÒÍacWãÜ*Ç‹²GÜŸ˜K¿f¦Ævk„*„úse™L…	^”á!¥Gğ ;0lEä·ôk#]é}ùŒ%ÕN‰|æÑÖ¨»Dj'§’ïcÒ±pÀá`Y‹MÚE¥]ı~cí†¦«¸.d—ÿp64Fe´o€‘vCÆàÒ•İÿ%ø•æêX8Í›mãÄçñÇS³±8ùëÂóíŠ‹;Y·Aœ-ÈÚzÊĞ3à¢˜n`ïŠ•E]{g…šê†}T§cf+˜LL8Nà¹%%şV÷íÂ`lúñ—(Š¹Ü«bdƒş´®©ÂW'Cø§¸FIÒÎÇr¨É·$¢ö€ĞÄõ}¼Æ¨—Ş©Û²ã!7ĞØıë£3Á^lŞ/ŠÆWÀfÂéŞéÎ4³Íõ·ª	2ˆˆO8}ğ6Úd©íñéó±SÖˆ.6p>b÷1qı½K0à² kqÇ%üƒÄ–,Š+ÈêÍ$Ñ¤„ş hÎŞQ
+‰¼Óñ)"=¨|…é;Ğ}ô£ÑäïŠ<g!=÷Åc#ËZhQ”§ÚìhÎjĞ›ô˜‘(M%¯]Qğw	=$ôÔÖÅµ×ïc¢Øn;Üô¯	õ$Æêº@è[™©®ÎE°W=¿­>J2å¿uõƒšàæ
+OæI±ñ2m•{¾NÅXºh¡ŸÁ|7 ±:UÜ°±B4@=®7²’ »–û§–×x‹—¥o–ÏîG¼Õú…ÇW3mSngZ ÜÓ–áÔiÖòôRP?KÕ˜a‰ô;«Z¡"ÿ‚‚ÚufbX ¶F=FáR~©ÎÏlòÚ«"déµ"éâØì(Y-%]«™ÛJ8´,|¾pQ~*lş"~Ír[Fö×Eô¹¿î/ÇÚˆ.œ·/0zvÃGsÛ{(::†1ïÙ„Íö­pÜoç³ïâœ3Íœˆ‰c¨!©ˆu#ŒiëîW÷Æ¥ÊÇEj¢(YG!e°fM}ZØáì{€‚"Oœ…#ì¯+PYôÊ¾fkÆÎ‹ıë,Àğú$ö3ú!^"w’Q}Ö2­ND8¹w±lÒ¤èãÉïb3ÀĞİŸÓ>¼Û:LY\z2™˜{[ÛLù‚£Ÿ~í„;–×¾–“ûĞ+q*PKsG\aJsÜÏåN¸±èˆ-~Ô‰ÉdfáoásGb‰=9¥6Ç%ø½ÊB¢­IjlÍ!£ËÕBÿ‰‰ !‡I4TÆ¥Übn2}ˆ Ô»q¬:mîğN+ÚZÔûvMÌ4U§ÄgÚµõÍjÑÜúú³§òÆq uñ˜¸‡‹¨İh‰½M`Ñíw¸kNŠ(gÚ¿ÜıN€	-¸ïáµ»JÜ*Jfâ×üîC•€Gåü*iÓÿµÂ®ÄBıİ!“ ¿,°Šè’ÚğKx£¾ÜÓ[HÃ­cÀ&ºjè]
+¸Zh‹áÛèpŞUÆ²vˆëğ‚}))<¬Šüc*æÔİ¹ºˆò¾²‹ı¥˜l=PUØ
+k ·„ËÌHOiÛ­¨•Jºd]Ä'4NÓ%ÍÖ´§#èw‚ÓÀJ{Eò—Ê¥KÇ¦C¾ZŠöfgß<ÓŸ 5_””7®«‚±ö‚ı\†;3úâ‡­X³/ø¥-"u¾`×vªfõY¥Uœ€³wL]£—C1U€2—’zå¤Å'ªˆ®jZ8¼&	¦’DÅ¢æöĞátÍYslYvãJ»#½Äõ@•ó˜şµr!*g‹ë* £LYá
+iL;eEûC„skÔ·¶ÔÑWOAåé¤¶$¨iDR@­‰RcJ#´Â-FĞKVöŠ¿mÉ˜NBI	g¨3¦%ip(W“˜µ…¥4ªËqúËJ»ëÁ8€ãKÀ×9dkùOqG8é¶+F‡)”ı’²ìoÛ±¼pK2æö;IKpj¸à³È&Xd«„‰Y$—°ŸÌÄş Iÿ?hÄ¢‹ —"U)}—Æ”¿£R3¯ĞûôuÜ(ng:Õo+„ŞĞ£ùr·f¶¼+reD0ìè0°¸œ xA7kşFÀğÄ%2lA\¿Ú­ò'û+³îÓ˜¸pn–ä§´\ì©©Ñ/C&oİ³Ú‡TÆ5±¨€OªµC¯=Ùm|ç&Âb;ÂC gô)iÈZNâÏ[«AÿêXd)ê„¹âğƒ¢4µ1U°£¨c š‡hÍéè…H®È¬â=Ku¢*ÌÇƒK	$¹VàË” èÕquŞŸœ(MÖ8µ$ø9éïó¡deò ¨«(]@Xa~±†€bA€‡Ì˜p·ê#Ö  ![ÛY‘PÎS7|üÍGLd‚kej§+•İ8ú””3eôlpå9|ÃÚ»šTCI]>8WÒÍ$½T¢4P—ê¬!«>]Â]7š  y£ClĞ*gˆŸÜ™æì4Åæ›pg•Ï°ñÇ9ø¬z~¹µ„Và^yô’¨¸éîEÒ++bc‰U¡]Ï“'d`™ eˆÜ0¬ó_şSkQ= œìO†Ø_,š­Òÿqt·WÜÏ»õqõ‡#sÏFÑE§‹¢B¢é £Ñ±Ë³NL…°Wt«ÁqÄóîÕÒÆ¿y€Á}s¹&ó0+: ¢¾äNÙ9‚?¦âQÀHRLqäåÙØ‘®y"ìq×ttmÅZG°6kYµ7Ê©İùM`DUÔàE„  ³ŠÛr:èı.¶*ÜšŸÒã×eVÇ'æJ‹¦ß­ ‘ßÎb?æ@§¹.¿W‡q,şMì‹ÂUó.OU­)üV¤	ü$Í//_ºÜÍsÒ¦¿=·Õ4g)
+Â* N$‘İÎ»¶šê27g=&:Ò$Ş©ª|úî_2ŠCş-³Õ){¸¬6ßø_§ô¾î(Æ½êÉ}x«;—§?ÙZ-›7şòÖ¬DQ¥T,E“ŒêWC~nù$¼Ä¼ê#Êşlx£>Ö8‘áìÖG<«Ğ ²ZÔ¹Yy'ßd5ú ™DPô.Î¢Åªñò²b¬2#»œÌ!B¿LEm†OŠ0”*+™õ,ğ lÀ®H+ä_ŞØºr9$9›s*öGaÔ?sõ\Ô©CF1fE,³e½ğã
+Üzé†o£ÇeÆ¢îO8ª®Şãn¡D4çŠ&rÎóI)3tÓJ¤,İOÉØ‡7ã(m†Û­™QD†w¥Çûµ_Å†1ùäOpië|Î‹x'vÉšñ”˜Âãk™€¢êÕ( /KìøBÛ†Pô\ğ
+wóõTæè_r±xu«1.ÈRİ+x8Èd.¾=®ê9#'ºQYuöwtßª­àãæ?-³#¯‹yQzt u©?…ŒÚõP6Å"2OG¾‰ù@àU	ÖşeI»-Ã¶ğDdæC ş¾KËœR*—™ÖŒYÂûÑZ4@¥
+í³8b"Ä¬BÁ„Ş»¤ù6‡é¿hE-ü[uÿ>Ç&p´(r†?Oã‰€*kBÚ¯tr1uàN/åziÀ-Í‡k®yW(c3„[/hÙvÛ\(ğÍ¬ÄL$àoå‚§$&c€” C4ÆcÈz6ùxÕ“©UPÉ¤ÑŞ¥(”Æíô÷,Î×öÇ(ÊßäğÊûğØÑæ*ÿöÈÄş¾XG ·3´e¦kÆQLd¢6Ë­Áâ¡^ŒUEø*¬rİ†ßàg>Î|ñ±²ãEJ']†QkÓÏãß¾ÃnƒáÓ(ºMF59hpTÜ¿±i'ÑœÍÓPR[‚Ï¬ì-9Ùk
+ÿ$‹è6¿Uàµ¹uW…¸»HƒiĞd|Š€e„sA	FA¦Od0cİµŸZçŒğÆş¯õ®Ä“Á˜~€8•®V»¡*ón'ÉºåU&²Øâçfj—Œ|U[k‰¤Ë®‡”	F&´Vw l» õp[œú‘¸²UÃú2İ,Mft4c«?Ñß€…ùØi@ns%*{ñu_E»Øn@X¾Fæú\¿Çø˜èAø³1T)H¯4˜² a¼j§wİ^ßù…aÎ|/ÀÙÛ®ó$¿2aŒ%‡M€öŠU|Aó“ôIjÑBx|åûË(n|ßêú`Ğl’õÏ/û$Üôå'%í±ÊÖ, @,Tşûú‡œEŸ/pO$Öz”Ec¦ùcôPN…›ãW|¢x
+‹Îyje&Ğ¢—ët¾ÁğBù_åáXNïØ:¬;üÆ©Sø<Ï]Â†–F:±këœpôÇû5<hÔ€ç "K……¹SĞEÆ|\ş“fÌÙ|{‡í–sÃèÇä®µıÎÖÔt‡/y9ÛÂŒX¬5YE*™ûv¸×H
+NÚƒK…`ãCO¼jr|ü-Àvl:Š†Å‡k3ÈyúİqcZ^Dã	™p]AJÕc8¥ø=dûÓäĞ°íæk®ß</•!í•½Ä¥ »¤%6v@ÏhòT¹½P!@Œ^…3´ö<zÜçÄÙÿ•m!6ô¤ëû>æÓ ïØ¡¯ƒÍFWv@N®f O¹æƒôÀck•¾Hé!u¸ÉŠ¹ğ6©±v€!“®ö{–”U¨îKYY§ÓñĞ8ÒŠã-O+P!ñ¹MÈl,‡ò"öUÒ‘2ä’r‰ì26ö³TóñÕ¶	Z	nÃÃF­;¾k®C’¸ÑËW¹Ødx´5³ok¡ÉÑæøQÊæé°ÁpƒÉ®oş÷OW´	#ó6ÎÑiµºc¢ªÑ·î™ø„§ñN·mÃ}s®ÔXæ}:·Isà^J’ƒåà›Á<h‚Q7uR¦]Öq¢>“NŠÃ„YU»Ó2cË¥>ì™»›|1ÿòõé”ªØæ[t¾‚’cLöá¬QÅP½½¥(³†ˆb‚o‰ 6—Î½Sêxp-'éšÃ´‡C(®æ
+Hã.¦¥X"ˆŸ9œ I´š™ß}ÑjÄBSbhDNaìnNœsŞ¼qGÚuó—b:	P>jG¥T‘7c Yü+–¦©qëß·>ÂÍÿ¯0Ô±z°DbYÕ>D'`lã CpËĞ¸I†qœ©JKöJ.-d6|Œ‘ùìUtî~y‡`Úò´½®””Ç¬àĞ½A]uµ.\ZXÆ¡#ôäà8›¾ëÖ“Ä\ÀùíãÑÙÙS§]? [	Zï_ÆT…À%@´–W¹²¹aÉnUN÷Ãáy4Í4rİ¤Ò8Rò|ts8ÿ3QSnQşÊ«èÙc¢¨F‚î©ÀıØ™”²>8“êÏ‡ÎõEG«ärN,VÎøÅ»ë˜j“óöÃÏxV¯,”j«“‹±;ûO¾ô¶£Y0Åø*#şÚ$×ğ^<ø÷3´ËÁqï¹ô>å´=œÂ¹›òîÅ€Ë6nÙY&–ÙQ)»R^/seÛĞH¾ıdÃ£”$wN?·^¶ÜY`ĞAk¨³Nõ­°ÙÙ–\&)ì6[S9Ü¢ŸÖál¶Éüu ÀPÄäz}ôò	<Ï‡®+<Ğ“@\$Qàx2rkĞ¤GàĞìŞùK¾m¡õVå‡§Ãi>ŸOîeòóŞ×PGß”è"äy’¤`êÂP]ÚzÕ5ş"ºäÒİ¤Skä`6³Á¦¡¦¡Ñ“ùÛU"üØJÄü-L=N›V,…?fUg™Ñ­ÛÃ·A~s<~+¢E•:Wİ·ÊÅe„üÜÿrÔ:Ñ@ˆPz!áQŸEĞØEmíM·~€¯^…	æ<C¢¨èH¬óÉ[^¨ô"–¤¶S‚r/÷;ÀF´y"KêwF×6q9øœO¡óá­Ót±G²×!ş÷æl¼-dny#ûXIpc–ªm}œÒS€PİZÌ âO1[Pö¡høÑÁqÉÒAt<f,h£ZG†bˆÃÙ5¯PøQ@½£ùş{XºÕœöB×íÍ?w†Íßï3áÌİ;’BÛ-êêNßÓÃ 7>J]zv8÷l.ÎJ²	|íåˆCVGÆl{ºIK¼Fo¿MF®ò¶d]…Æ¤ûAñ9½şëmñ®)°:æAq_àhÃ›¼b›a³-B9Ãvxw@Ëd<t¹FÂÓ%qe;N MX§4>¸p=¸=ÿâ{À¼'1A‡#’b š˜(Îª|õUÜ1ø^³!ˆF8ôÌğºmÁZîÎ“f·ÃcX]2ÒÆøÈ&nO=XD>œxuÙŠ‘‰ôŸáÎRçËĞ5%!`RDÚ7n¹tYzşú·EÑ­•béÉåÆ4 ó=¯¬}™€İ÷¾œU.ÀâŸ¤mIÉÛ‹º)9!ö5“>˜‰óÃu'µ©nW<œÃü_Ñ’Êgñ0¸¸¥ä¥".taïí*!YX–{–oaéòÿK= Ú³V÷	D/ *¸¬Á#
+âû®?’»×LáĞ
+•åK˜!‚±…%ôĞw© -@YW7„Elo´
+».Ñ 	ÍóQ¨Ê/q&”fR;…?¼°C¾õ–²‰Û–£ìídœÀC=9]ò«ş2OòŞ|!¢'8&º ì“¦M®2¾xÕÂ`—Ùå¹ûŸ»døı¶k;æà°Fl}§ôwÿ°ÚäCTZºM0Q%DâĞó¡¿,?lq……¸ÙNµS˜±ßš3Â’O(6Ë	ùÚs} Ç„œê:T”ª755o_€h@ıñ	ö;:ş&:º1šåÿr‚·x‹_»pÚúh}ûÙüUÿkE‹imå/B¯Àş1ÔNÒWb|Á¯¤0¼Î™k¥{áiC[¾­ÈÔ	áê»g%²T'à]²Ğ_ZÍåş8Ul8h>jd8ÇB†3¨$¼DeúÊÏEÙxXX=¤@.ğEtÆøEµˆ	Yöf©ãÕ¿J.â›aÆˆÿ£á¨;	d"ÿøÃäŞÅ`ÿZ´ÂêË¸AÀØnÏÑ{¹÷?F–ÿƒÊØPğ\ºMMÔæ‘ßsÑ×9èÇ,0~^Æ†?ÿ™z•…3\Åßü\SIP›„>¡Uè“ì\ç¤ısÔŒ“P“=eº¨S¥—¥M0^àÛpz(Äd@·÷ö‘ÊVÛ00ÂÓèlyã‘?psˆ"4ÇXÏæFçãYyÂ|è[²ê8ß|Í´Õ}úÑ´e˜2âµ©c¹`­´}½·*[’.-Ş“@^±,á»äÅIn1X"kåC:ÚÕË\-ûO bz¼ÿ—‡ôÔ/¡ |Vf*¢¢f'(Sô‡Ï„8a²ä]…uš!Ò?h^Âki”‘}ëY8Yş’E†ñ´(Ñ¬ëTmëmc
+§1Æk:{è"—/*$®:?XÿÛ„ÈAíA8Å¢xDfë¸ÊYs*[_µbğ™scÌ¾ñ6@Ä[îŞHÎ²ìr×MçØc"ÒãÒ“”)nÅ%«¦mmtDË£ˆoSl¸× G©”¾NÃÇïBÜ`«0;(}ğ#pLT…N¬Íµ|h@¼¡¥ºÑ)Rÿ¿4Øæ:äkVëà²íq´måŸQæ¤ ¦_~DjÃ !TGNSw¼B:A3.€¼•qôãKî[Øcé=—[wr	k¾ëø2;“1‚ÿúFÓö[:)!NâNb5¢Ê'æÄü‚øíşUÚŸ-?J~Y.”óY¶”`Ç"›ßw¢ÆGå?–ÉÇĞ#™GñmBİÀfÀ¿§R¦Ü{{¾‰,Q0+Ş}“/A’ Ô0İÆ]:[=N.æÔ§WË¬b]IíoÍ[ß"s7Ù×Öoãá!Åö~ø¹XkšéƒÂãÜ¥0w¸O+ë	İ}E¿ßÔ|Œñm}ŒQ°©dğ9^>¦]øÜyuFm÷-~ãNFªTJ.$Ã/úØ¼|óÿõ±µ5¯g“Ìë–ÇÕöãaŒaÌOi·ÊCÑ]ìEØ‹k»úZîQ?N»æoÑ!Õ«®D²øs¡ñe>
+J	óÍªŸìVç;hÂ? ágÜƒ*ŞQİš©@Áfe¿÷½¢bì3;eŸ›FÆ…Œ‘A5*Š­S+PŠ9å‹+M—m·ËÛõ“gŒ/Ğ‹ëXÑÄàÜ²cñ|š¦“¯ay<\$ ò§ş‚m"}áLŒÙ*^²Ø8FœŠ:å ¿˜vMšK®;µ ¶æÆ£ío‡'îÎ‚qkÔoş¿ùi§M!#rnÑ•'NBœ‹ğ•,¶F.Ö¯’)ÜÃš¾_ŸfÆ/~-mÌúåò¥BÓ6à—Vú. èÃ'ÈH_j
+åÀ(J-CàB–ƒÑü˜õ­Û¨rt§ÛÚ‰t»êSÅAßÊBb(·9qƒk9½pÇ5}ÓH¶×›ÂZŠùiÒBU#¸­ƒ&¡±9o K«?-‰
+W=ñ‘[´H/ƒ;8ÒYîº>ãá({+j²PÒ7Ml®ä
+–#Jy¬$r¼…ùÏÇÁ-j°í‘’¡^Cç¨ğO@CÁŞtíŒ5Äàğ'½êê»ïmÖ}M’¸VêÚ’’æ²¢xXX¸ß	6ˆˆ[”ˆ|Ëô R'[›ÊkÍç\Å<ıcóÃo;ŞTB™ot8aŞ%¹øK’r3­É„Ÿ­ú?æÛìiÂd½ ‹ ¬©ªõğgÚ¡Lí±¦£7ÃıC<ş£˜Š¡	*˜ûL“%æÅ
+E:œ>÷Ëà•ÂLÖæètO¦'´-pe>Òš}!Ü—ÉèÕ³—ÙªÉïÔp9`BÑ¨1HóÂÈC"Ì`ËË±Iåüi>3-ü­“ŸÇÃÓÜ‘cZº>“ÊMÓ µi•V=WÕMù[¾¾a¬jÉ‚+5Ø¼²J‘*D|C Ì¯e9X.¦`$oßOg>ıjxTû&\İı³òBÇPä›ÿŸ1üšå­Ğ*¸{æ.„€r<Um²$s>tU\•»ÒXÏ›àvÊğ6êC‹şxÊşúbôpŸ&?¸‡°”o	(OÕùCÎ‚Zê]á1@İ)¦gkK¬ãşÀ™àé×/F.êR!âçèDK7®ÑÀn}¼¼W’È[£Û‰¬eÿ8ÓgØóØ™^r Ox×ÔEÌ ª’!`m'ïûJqXOFøzCôÔBï0«çùŒL'ú›(;ì`ß	dJ¶à[–Éh+Ø3ÎãPÃãwg‡¤w¾{7@šøæ=È¢¢¢r\Ùƒ¼¸ÊI>¼Ïü—ò%Á£#RùÍfx¸%åô†Ğ;şNÌ®Ó2ÍY.	93é9e›<
+ŒX49Ä°œRSæjM¨ØËiO‰ª]ÀãòbÃ)Ò[hpäsÕÌ›Õvf(¿!ã¶1ê¿r3´Ñ#¿C®ùt@‚#n:á»N!ë<9÷I@ö¤ÄŒK³¬m•ÛØlüêñ—¦‰¯ªRlg®}¬^­©Û¶…\ˆñŞÓŒ]Jài5‰å,©8"$7/c˜=5{{´öåìrWÙAiMp=å>RĞœÑÉ]—ÌßÍÔ# ”ğËX
+î»<MT©¥$šKØ×~c!62û¢øU0ÍºôŞsTèDÏÚ	;6AlÌÇOñbo|6d.FêĞ£ Wºú¼nâ|Ñ ãI´n¦äl¾`$9ÂÒ&pl=‚0› ¥L†³ú[@
+™?/{@Ó$ÏÄŸEs®ÆmÉS®vÎ¢éü;Æà+Ÿz²ÀÈĞ²¦Ú†RzDÇø(éÕ(ã4>°ø¼Œ$™–.%·/N "fÿØÅDˆš5¤\‡å²EÀ5‰ƒkBø2×?;rÖÊóµ³tZQü(µºÒ€Àx÷$‚óNlªL¾Ö»LNà–Ëz¨f5¼ÊNÚê;V»Ü_ÍşÓø„ø¥ÇÙ'³S:³ÊÜ¶g¼¯«•úáàÆõ¶GûDåg^É*	8¬9ûsk—æ`ãÅ)›²sDyÿŸ¢™”´ƒ	^X¿?U:ş€–ÎîÙu“x›‡Y™˜ìUpğ¼p‡‡u‰Ï¸Áõı-\¯–¿úèÄ†IRòˆ’û(³˜4¿ˆ8ñe-:`üÖ?</ÅËú¼—APÚ\htœá ÿ9ĞÙ­œp;AÁı°ªj‚ŒUŠüÖ4pÛ¢æCÊ¼únŒ)ı&CIxÒ¿–(¶øÒn§¼áÚüdœPÍŒ@Un§ÏB”Õ“'.¿ 	ÉnUî³‘?fÈ2UsÖ·ÖŸõ÷eÑùJP3nAJ<ŞO¼›H‰“Ù*íNå’!ùT”$s|DBYå2vWG•÷µà§¥ş±½‘Quq.,M±†gbËÑ^f÷QŸ[œ_õNâõzñ<Yvmô‰Ë³i ¤öõØÎ”­¯gÉ9ïÄã4?m°æˆ·ĞK¸¨™Zš©”ÊÔ˜DAoûfeJQàËö»kïwÉòÆ xAS‡c|€•3‚¶ii8¦4óĞ0ÒO>gEAvªĞª`Ãì’;Ë÷~P+çv«è"ÿ•Y²ãYõïÛ9»n4”»N®œ <Q¼mEf©•’."´¶†9Kuõªa,LÄMş‘köKRı×1¹p R˜ÔÁÉ£õ|—z‰ª‹B¸Cdú¸&hâ
+"	·ß+µ‰¢æ²[QÇ¡˜-+EÊOñr§N†‡ÖÁú÷#‘(ÕÇ¬Uı!ö“8üê^ØØrË›ÍïIEú‰å‰“»aÓU	KLnc”AÊ×“m¥kàF¤±×Ë/Xµ¨wX}‰<¦Ô@Í
+àÒ•ÁÄ¬5­VòÌ2Mş4ú7Ò~,ä/Â³FoîQÇ6”~õƒŸíh¬03ÿ'«ŠûçAÿñÇ¥£™$|y™› 6Õ"Ş9Oğ^^—àcæ˜İŞ|µ§÷óS3’ò7Z°D°iŠ÷éùÑ,$êNÌ§EF ®5;o'7ct^´OÑelHîÓlR©‚ğÆnÔ{õ~%àlw÷wØ·<ûÖ
+ƒlïNŠ¼@±öÿlw‡G½º…­-»=o~í‘{§§İAFzå®—MQğ r@ïß™Ú<‰´œŒ[¾xOS-£pâšm½°_üÉæÂÁÚNæ*ƒæÛÁªØÀ,Ñ>4¹Ç¬¾yp`”q¹ûz—ÄâĞjËˆk›#´ú¾^¯şÎ‚ÒÃ'¨º¥wz³cş8,‡ÃX«@F%s2ØG°|(Á¹·4ÇŞI¶ÕüşÄ¾bQ2E¼AC·|ìDnHš±	ğ$UÉ˜oÑ0şÙŒhAB®r{Ë/eEÏlu®¢ÖRm ÇªŠïÅkÖ8R²ñWçròp¶B¹DCL/ôÀïMÊÌºàu±1ïãq8İT’¨)/X3dD±×ßÕû JN	6tùódh›‡˜ØşğÜËƒG[Ë§Ë(TcòĞƒí—ÔùÆV…˜xÊ1†ó?wL|ØPÚ8‚íŸYî(bÿRrXR®Ü;N_	ÊâÁÏWj/B²¸x`KÏ£@¸x¿›+£	ÉµÿÒÏtRÁãèü€i‚k–sd…pJ …ó	Ô@çä¶@¦HÓÇÃFÌà˜	‚vH/ë)ª%Ø¢“‘™¸ğñeÍˆszæ*¶‡‡|2ò;ŸÊå‡	Ü­BGÚ1êa5üì»„ëKÈXMV¨•=Ëî.EnñÖ2[äs}&¥,¨VNdSQºwÈû´mş+f†mı²©É§ÖÁt‘Ü½©”‹Ç$ª˜Ë¦”mêÅçëøü
+:ÁbªËŸÒcë"Zz²6ş¡ÊRâàÕVü²‚˜S´X>ôææ”˜¢Şµ5(7sÜzZ¦Ås`V;
+œb¼Ü´’tû‰>ß•àÑ ™Œ36^»›Úã@àxËÇDâgHV#ª¼‘!gg¼ñÚfÇ ¦XP:ì!ÜnğşQ3õl¸\şÄ'~Ä¿¸ä0…æ;–Î“¹ğ\¦¿˜ê²;»àİå28º”G›ŸUEbş’«fz8‡ƒ˜|bğAÛtZsƒ8¼0ªl¦|€'ÇB04qb$8ÔR*!SP¢tt)x%½u{¯¡°?L|>•ÂûJ¹€ª¾”:{¸ Z¼Á?¤
+ç’V=µ,è>}LyûnÃgÌÌ
+èÒ‡>İtBæÌp¢¨cYŞ_â>Æ³%¯‹Ká|9å|ü.[”—ğKÑSôï_Iú=!o4TÜÄ|¤y,rıÕ Ä²B¶‹=õ¬óÑüÁªjcu¬÷øş.Ô™’²Ğ}r€ç]7«ŸnËÍ•>Ïe«)LÏãü3îç9©¼-­‡AK™å$ïÌˆ Ânî£b>üFl€/eÕ¨É¯Ä"3ŠeøÔRÜwÅì•·
+ Ş7‘PÁ36„¹Ä8[v»¶·	ü\¿†®ËRØša7›hTñ*PZ jy<U`L!:³OûašâÜBôA»jŸ]Ä?šüÙõm^zêt³şãÎ,gô–æ**¯…#ı“²îÛ&BÊú‹ í;|Zv	v÷ÖèçÁY©÷ôP’@H$¯1Ñr°.“ŸáT#©mıv<·€PáÈ—¦_sa(şCêöÔYè¸K–€=U¦:ôt¡ÆsO‡áŞ¸%Giœ»ÊSâö9Åj¤§%0*Â‡jß`¿é²ÀÎ‡Áï—¬#œëãèt¼gÛúÀu¹<Ô¬ãµÀ¬PÛÚ¡ãZ%çÜçH~Õw­eÄXüOtµÔ´ğ˜O»Bñ´áÓ—ÒDÚ¡Q×¦g[1½/°KŸB@Uª3ùHH©€-Ìœ.~s\l	ü»„Ú.i'õRÁl7kA5
+„0ª
+Z}ûúİÜ'ŒnA%N66bnY÷©ÊÙİ4ûİX/i4bW8‘Knt’ÇÜ‡­Á»‡ó|©0²Ùë¬fT­‰Æ»ô]ÂÙÇ5E‚Aûwxg²?nùê¢•¿ŸhÅv ­ïª©&hWŞú°ªs"¾&e vÆZõ}³{Ò;
+©õÓ °å•+“í ~œçşàí½lPÙÁpÀì
+d@¢u™¦Y‹ÔcN9¦äà¸í\7-xøÎé‡Œ®¯ÍıŞG‹9ç­'iöFnñGÙåİ#C*RJgy,{e×±íÓ¢²™Ÿ‚1ÀÒÅ0x³VE>«Ó}7>|MÓ ™èãôÛ°µ”ÆÌv4hş'èİ_»"~ïâŸÑ,„ÂÒŒXn¸a¯!üfÆ½`HEBİªoO\:OÇÆ}S1„]†Œês²@HDäà£xdÁø4eCãÅ¯‘:Sø°v@p¸%ƒ<·Óxnp ìtv‹}3± w[O½Ä±,Æë±¤:û`ç@¬ö6[D ü¸2ù2±¤?1ü9‹èAe¨fHÔ„©/ 0í©,‘òóŠ¸_[p4ú’	µşòe¤
+t:øBŠ,‰¼îƒ‚Ì¦O+,ßÈcµW ú=…A5İ¯DÌz ø³º‹ë¹zÆ<¤ÛtÕâ0ƒ¦Òí›¤&Â?çï¯Ëj³<EØ¸æF:Üg¨‹İï2#3R!Ö±¼CµE'Zİ·F¨V¾=îCl~±6Å­"Å?çü¸¯ëŒÏ9Tu )ÍqÉÊW=©p$¢SÒ½Â¸·ôLjq³ÅaåxHh²zÔ‚ZWõ"ğ2c Û’/U4±z–“³‰½k°š“uiœOë‘´0¶“;?½<vÅ„qUDÿğfrRê“Wåó¬ë¿p¡-ø„}×NqËuñ²%m’Ğ=µ¿àra}(Ú|]¯–Ú4ã„U†ÔÎğ!¬‘§¬Ì¡½½´‡7÷0mÖ›Úy²™ı¦'1lpê&S$K¹Eµh—ÕÙs@öLc3&t+ä	s]®EòuÚ€qÚêÌl*\ñqÿûL÷–„jÉbşõİ«œãO$VÉ‘¨ƒÑı‘sd9½dë4	„D¨‚ZùÖC SK§Ù-âã‰2cfğ³b¥ï'ß	››(uH6®c
+UÏBœœ'CêsJ*åùÄ}ÈEáïM§ê
+´e§öL,tˆ­ŠõÅÃ~½ÙñlV³)‹Qòÿd+ÃÆ0VGœoÔcAú%îU-úí¼ì,BûX©K‘m?ØÃ#-AyŸÚ*t¢k—$zv|á=?D·Œ-Uœ™v÷C;~%oî‘ºkŞq!Wá“(\Ÿ™qjÙDE “W~Ã>'v™€uĞI©º¹t¸æ=QÇÜpN8è^#Ì·bËw­îë‚çGLê`á•ˆÅõ"±ÀÊé#wÕSY“+©šÅcä­¥¼¯¡©é=-)×SGC<4^ÇEIš‡ˆ8&€JÃğõL-©Ôa9°0í8¥.8U¾ÂÕ’ÍhîQ·?aO­éÌ  ™ÈŒEÅŒÄª‰"Ê[™a—­µœl-ğ«Lİ`$°ÄpR(ôJ<ó½Gı`‚¼E}hÃ35S6%–*£¢õ·:æøÃÇ+bè‡±õ…¦‹*ü2‚Ì§¾ît}¢¾ª4ê}˜
+Ô<Ÿ+½ZšÆ¯-T55[Î1ö²_WAgÄ?-"jÑv¾å Bìõ8Eß“ÿ€ıËDy.™D?ó*&)ª›¸£²<v›Œµ€2¿¼œöÂæ—1»„~ÃjûÙåEJ`Ùå‰ûê7„½¥C‰—y‘t«ÚW¹bRO’ssh0siÓ¡]	+ßH±|XE³°¾ğê%Ì+ÜÄ¬<8XÁs„=øµª«åÔµ­]­Ô•ºÆğÄ˜©E2×Ö˜ô§Ø…¶|è.bÁÒE<CªSïZsF%Â¿ûv"jŒ•³­ø¦—¬ÍV½Ç A{İƒiİãAä^#­	€]›ğ£Mò‡‰Ó‡İ`‹'¼c¹m¹ ´›8öÒ^®)šh2vômsòmÊ)jEb$]‰¦úÊğŒàÌO½°>†‹v9rÎç-¡ª¶4ŞIì e•%E¶’Mc©Šë¡>€Û)N¿¡”Óª²'‹3£ş<;²Ák;½pvTËªûòa³û$|qWİ „#\üqøÌŠãm=rÎ
+\W\ë}¥şˆ@R³';/gkş¡²S¯¯Ã¸ºÔdâ2’Qû¦bj>bóÅ×5H`†€+ó¦äÌ4ÚÓt6ï:'Ï—§İ˜ä9ÁE(4š¸•+Ñ„?C¯r«2_™á„åT1>T#‹ÍjÍÉ r²ë;ÈÓ‚¯¨ˆÅƒå'{êÈçÀ¨¤¦1Sæ(zŒêĞlUQ´Ÿi¶q(qUí&\‘ù»©¢±/bã ³ºß9-Uô [&ì0¼ _P¤úç÷ÉÏËOéLgÎF¬TªÜ¾áëfq=÷3bòş‰gƒÉ_÷¢fš<Uê³îógk·ßğ*:=›Ç*XøŸ˜PEÉ õ5™_ÅÙbÖjàÀìƒ‹ı\&o’yaGû­=_x®eÄcÛ ÆƒÆ||u9»§ÉKI¾C#–7œ¡ü>Tò3~ñiuCâîuŒŠı¨#«À=’¼·~·K…+›¤ÙEL«ĞZµÛAä*S£vqí^3‘ïÈFútô8’Iıh?>
+›DiîJôÓc)ùÙDHÈüXé’úÄ$¢*G®ã§ëÆg2¡"dB€Ü &SÔ»…™æƒÍ‚a_\ƒ]nÌ¨®îÔ={±(n†›~-µó“-ÙĞW }÷ğÜ Ä0»0JåfĞBç+
+LB
+©ŠQS…~r<M‚ƒ!lÎE£{ºoÆğ;—ïıîÀec$|4‘ ò&æÛMhmnGÑñúÔÄ,r™¸1‡Êî†ì
+M‘¦dx¦í-^§ÓÙS¶
+ª¿ÜÏïÄà%Iåöç_@6"QPœ©ëÎVY‡Ä¥s?Ì:VÑ•ö­'•ˆ^jª|=NŒõE¬dèTÕ±70.×ãFß³3ĞyŸ——œÕ¿A¤TéÍy.5£œ¸E°“ ë3‹İ,8;ô"÷ÓõC(¦jöˆa:wz)å3]Z‡Íê|w8Xuy	)ıÙP¯Ï€Å^H¼9ËÄÚ¯ÁŒ·±Káix\t>’Š
+dPO-mí:œAæPo
+º&®a©‚áŠx(2APïkc´ûÂÑVQ•)° ŠşåFŸF¬ú¢3¼ııcã5°;Is# ÷Ù¥“8;Ş>†œ©Üz~Ñ“ˆ_ƒ¹jØ7ÿ-[ f$sCØ[1ãÇ%ëK™çAwah—UWEy¿¬@æ…u‡Ók dğÿâ‚İADì§}<TRç‰Ù^L2"ÑÌæGöBa‘€Õ3¬¶ ßÎå«Wšn-Ö(]šéße¢>¥|’lYòp6¹†bĞ{©Æ^¦tKømÊóƒĞa”¯¹Vé¢Ó#<Hšgª`&TqÉF^€Ü†@QëeR‡ÿ'Uª*1,e¬E{œj­QÚ`ÉG_xcÍ¿Di!yj«‰k¿Îuúíy_Øİs Ìd@Å¶ê“‚pvãm‚ œ¦İE–Ò5$
+ëßBŸD½Ş¶EN#&ğ;ÛPÂ£•z/×_Ê ºn‚XN²Ã.ÃÂfæé2{bn<…!¥ŸÌCz1ãWmEJò3’Î{Ä…bÛz¶A“ˆ/ºDÒ[Í‚ôÆ÷[…z‰N»	¸£¡~XÄë‡ABö^›äÀ;¨k|·’ÇÑp0%T£pGj:Q-%JàU4Šñ8¡²<ˆõ7Ò–`(¸6
+›ÔŒeàSìëa“Ô2Åx!ŒŞaHşü
+€«ø]6°¦(øì‰aÂ ìä$¡¡½u`kS×÷H¤ÈƒsóÙÊ—Î($ÕDaÒìÀ{cjÆòñ<“£NZıH)7ĞMyn(bàÉcjô+™“bPKy…ã¿	.¨P¸z´ˆ×I=0ëµìÙ‹Ğé‚ Wáù¶r‡¢‡kŒT;k|I	v 3I¬ºÔèÛ5)ãĞXò¾À… ©2¯e8ß¬¶X\¯ÊËı~Şõ±p”xP¬ès*<	“´R{zÚ{•°`ylIWÉ“Wä[`í41_}‰sd¼Í;s¢±Ğ¯]\ÕÌ_ì„Í)R¸3¸R(GTxÆ¹áZ1í²¯ÄşØüñ9k"¤ˆûrøƒ5;+½tòğ^{Oô¬ğÈÉşäìó†J_5ÎÄ1‚·'m–LŒ9]<^;MíÃ¢µŒŸc…m¶É.Ãµ«åÖøíá ¸µòÛR?oøÏÏ½6UOÖmÆhÄØÜ*¿5*Tå³£éĞ©+EˆÒ˜’ı:ñÙS‚'<¤¶1µ~Ê¼u1›…÷©‚ĞöD.v•L¹1ëöéh8]æ¼Z´*åa”˜!Úıd¦s?Ã‰K ³ÊÍ@A*ò"ægZ-ÖşŠd–À²œh;Ÿ¯à¢Íª‡˜JÜà»ˆßV–ÓQ¾ ­˜´eJúúú2¡Cÿ€j¢õ‡$;ÉÑØÒßNU±S:`İ|; £eçsõÔZŞ6İú­(ë¥ŸYCÆâÒåŒçl'+
+¨Y&Ú×NÔ{#¹c+Ñ^˜üÏeW”º5}¥IRÆqyT—.kÎ0„h ÿ	CCŞe•5½Ãw·å5‘ğSh6\W0v©Uùed,)øfI·ÂÌÁs¾µüZm:uQ·²?@íˆÇUÛŠ'/§ì~¢}•ß}Y~GÏ¥lFGáŞÔaîÆ	¢ª4q|M^ıg„"ĞXO*Ès·0Z+t%’—’ğ“CJO «ßAÊ
+fòw‹^/hz‡—3<è*¡)¿ õe¨ŠsFèË"SéÖåN­ÿ³U´”ıÏÜĞôêSQª(ˆı;NWì¬#ô3i:`H²]MìİÙënhÇ¸ôp¢œ½Ä­7Ú- Ü‡„Ä|‹ÿø‹ëãäMG[}Z™­î/ßÛ÷\¥é¢~3?¤	’ˆPˆÚP·¹q:SF¼UïÑ·X–>çÿ`¦ìMe×·ìê8zBŠ	êM-~N­¼
+k¦¬EµªWÔ¨;( ©.³{“‹Å€A÷–¶Êom«/îÌºoŞâ7e­4bëÆé¥QvgMËŒµZCålÍôÊ·Rº¥“ÿ³3ÕJMİÊÇ™#}ÅÛçWùè|9Beş v–…&kù?ó…òÖf8y,O1â¼«¾$ ö·ÅªÁçÁüdve%}k5Z‘Ç7Ié°æ"³ı¼ßÙöøTÈĞW®q•.ÈÊû] c¬Èææ˜xÚ‚äH8]Îü—GÍø‡×(ÃX`Ğ¯V.Vİ(œ-kÕ:ñóã§9#çu´P8,f.ğï-µ€¹AÉÿ¼6¿—]²ñÎ@·Ş Â-Ë¡Õ$2ˆÄšV±?8¸1dßİäÆL;¤æäÏÙV!u½Ô\ˆÁ£$N{J+Ë%0ÄsUâ€xjh U>I_îT	 -ø»Jù›1ÛªS¾W/Dµ—ÖåûN’'¹Š M§¹nIĞ‚DµG@á™†r:_b¾¼íS}—!šé§’ğÅWr·'#55%6Ô¨Ó^¢Åƒ]²ò1V{‹aÏˆF¦uõ˜
+äãÙ¤—'£ÜSî„2äÚÑÈçµ·ü\| D’×˜®Ì±ËçõÊd|næÔ±kËÊ™?J™ƒÂƒš®ÈœÎıNë£q.’À¬Ğôˆ:“hU‹
+_Ò³d[°Ì	©{ ä…çĞ&·„ëGõµ©hz²l(é`dŠ‹¢ˆóuà‰]˜)û2
+u$+„K÷$€?´†Í8zO“·Ü¶PF« }Š”2(#Kµnºhvb ‹‚!H½;-l@@0×ÔÉÔ„£ÉjO×aAMOï1o|2”b(ş@h ğ[›ns@˜t Ğa™—­jOa9ÒCwn,ö«ŠnáUÈWÅ$ÚîÆ¥Œ&ªªÕ‡ç:‰gçO Ùç§Q,“2æ©oÖ‚¶”¶d”ò¥n›K‚mÅÑÎÊ×Ğm•Z Œ.0:}Â°û~ ­ä÷ÜjjÛ3ÇıÁ¹ÜÛ¿Ë[Ø¸z­QòÕ{Œ>Ø.¢·ËG€3I‡”¾½Za^ìİÎŞ´wÌ#A¹Nwä?Û1f±e¼@Ï×àÆµßáŸj3ÄÄ¨G÷u"æü0	pVxˆœW$L¼í3Åêb¤¡iÔn ş`SØŸF1D‹Mã|ô_ŞzÂÊ`T)ôÁæ–Ù{_¹2¹®|!ïÛË’ÍW¢lBsÇ”»Å2Ì¤J —RÔh<ÃÌ¢w\X(7Ù_w#ÛO ª˜©ñÈËîŞÄ¨tˆ¤ÍŸĞçù‚{{DĞtêz©º&,Ğ¼“ÇIH%#_ QÕ¢…%&@¿ÇJ Ûÿ¸]âŸÉaœ…—™ˆcêû¼8²Ÿ÷*­ƒ(ß§ß×À ÷ÿRñò\•w~ÇUõ•#Íx» Çñ½—ïiñSøÍõ ê®¦ÔÒ?†%‘›Ñ0Åd¨±Òşuj¤š—ğó“…½g’u@€9ÕÅ)¦Şlÿ œ`Ö
+“>áñ­‚”ñŠ?uŞuŠõ#mY‘­nñº;x4ÿĞWb³pĞêÛÀĞlÜ&‡°)ˆigÿ×„Ñ/•¸'tW‡üY|'.æGĞ«CıÒßv~ËĞ¸÷= wü[ÿÕelËãÛß…ı~	d•Ãh¤$,M[bÉšåG_ÌäÂIJìÈ•©ô4l}ºA±à7.31ÊH?$·C²á&Ú„ŞwùÄ
+ğ4ïïs/D=}§]Tô8?2öª¬fß>/q†ï>5à¾Ax³”º³¡®ŸlV¾6âDÔğ2:´-%ºOƒÕ¶Z§œÃˆˆéëœ‡SyÑ›5Œİ„ç3®:BÙÑé‹¦Rö 7V7‰³¥Í·‰”ı{N‡¯D€ôæØ’‘âçÙ7GÕöYÄ=ü…sYF`²„g¾Ğq‰äxºBºùˆhNSÿÅ ö•­àp ÿšc‘.*ÃÊ›u’³E½üVd1ÇªÁ7XrÅcî¢Ø
+É´XÄÇ6ID*©ÂR}°Á)H5>DH…ä«<Äh‘;~:õÍÅƒAÒİ`—…9–0½å Èyzu@qgW” >…:eOBÎ"'3¾½Ó–f~ƒPJ¶ß	Â¶g¦ƒIõ“pD	ÿ0GA×ı9¾>·Y7Ê¹ï‰5%®~TÇœ^-İ¥—V5ÍŒ$¾î7+¾§æG÷
+wH¸%†¨$YCG»	G!tQ~˜ÄÕŸZİ&dDÇ*İ¾®3ÿ€lRŞğPtÑ¼~ÑB0$£ÌKäÈˆMĞÓ’¦DC7;Y¯*Òqööml¡¿rÕQ5‘íş
+ÔÁãéµ$G÷ş	1stä*;ël¶Y9+9[™»´Œ;Q­;så­é†ÓÄS6£y¬’ˆ`Ş•Î¬''õõ?•'6c[ô,4öœÕ”†İî´4İş^ É`+˜UÕ¯\ò:…Ê5‚=ãÒùŒÊ¬QÕäKx/ÎÈ¡:Ezw#¸Jş"¾Û!\uÂ‰*—DYÅ8H‰>=jäzæNÍŸ$’×
+ı„û—&DŸš(^iÌ…Íš;Æñr¦Lo‡?›RŠ—~èÖE½ßZdFFêÿCà‡GÔ_a¢‘œ.M¢“n^ƒzR«iïÔš’ÇQğXõiïÀ=Íıx”Uàj%lì!²í‹òSHmIãzKyê	O5µ“ªıuµÜ¡¸Ö´Ã²Í¶ì‚ Šˆêİèá@œÈ)º£*åGSâ–2cÔã1ÙnĞÓß–ºcX-­5zBo;n* ºÅû¹»µJ4—h}ç¢X{w§ò>„¹>’µNo¯i<
+v´|&g‘-·ñİ§Gn¾”¿Ÿ¾Ü-7ê„éˆ‰güø·` 5rD9{Fmô®’^8¢ùU*ï|oIlš¢M—Hø“ˆŸ¤ë`ê
+ˆja¥ÍÔ0¤pŸì^[ióÙ²y%:[;>}nWú¶aÌCkûıòp}_aV"‘0#2ık 'ÔšFÎò•`Áü»Ş=°ßH,–w=ûW!"êhäÜ„Qãb1©Ş÷)plŠ§ÚZÏ\+­µ/o½‹õıókôØ€/,D‘³ş3xÛ c+¢„¨‘±}v¡K,¶ûS&bZP[N×êşZÑHc~¨}µºÒüØó“\\Dò1a´[ëOE±¿fí’–§µC”¤İ±$°ú}/½¡µ+BòÊéRñDT´ªSÌ4qAv_:LñFÌMŞ:*³’û¼ŒBÚúÏ”´vørìñ‘8‰Z#‹&9Ó~g¯‡×´ôŸñÑß[-¯cNª,~3Ÿ£y9ÃáXÈA”ıàvã3„¡)*!Ûnfg(¶x9ºwZñ;ÕG'Í^7[=
+@ŸÇÍTÛ‰Al¯Zé™„­É<½
+xÖÏÚ§{^+¶q—gœH¼Vöşµ¹ÇºT6üZ1b^]°—Ö]Õ–C³ıkˆÕÏ¤DÌ:÷Éş4U	=­ìÃCÊ‰-Œ7Ó’İm—7†›æù)4UDs;÷Qp¶·Zèa®ÓŒ0EJ%…ä7,şêÂ§j¸l•<>ò°jHÛSŠ`Õòª=MVJße?xÉ„Z!PIz£×ËƒÕœ:˜«‹´vĞ«KÄ3ØydäôMè±’‹;\m{.°ü›Æ-¬.bøí'B¯³èÜ)œ9»Bi5©õÄÄ¯M¯C„)0Êßi¥¨½ú‹Ím±õ]–Â¤A-hØØÔÍ¦ÕoóÅéÌ&»Ä&;ãöÉçô N{*ê!ÈšµN,çoSƒËÑ–,í}‘],÷êÕ6 nnïcıJS&¢6£'L¨FÊ[¾¼O4¸B„Á#Î$=ÿ«Kñ3 ;*Á>ˆL\:}ª¶D¿÷ák}Š‹ì	¼iÊHTô*,@™`ô¤Ü˜uecYÁX5e§ş›Ö(Üœ¶$N’Ş–·3LÂß¸24²Û]U~ñ4°„xèñ&>*Yâs†¬bÎGªïØáJ¬ÙèZ*=““Jë*OäÇ`u;ƒç/:‘`…šG²”u¿ÈpÍ?ËçÄµü6SÒ,’ˆĞÑ•?ádVwXo±¨®Ó×ë·‚Üğ½r'8O÷Ş©ršï‡îØ}gÇô$Áy—èOÌ:éYÁë!½`byoQ«bQ¯qƒİ¢4ÍˆĞ’UzË*.ïË÷>ŞÑ(ÆÄØ£HeæÑ
+©şãÂ“2–eí"-âXIrnXğK‘'¯%ÈY ¤‹µì88â²‚ŒO^~R—ÿ«{fúÇÉg—İ]ˆ(rnÅ|nvjüÛ£æåâ¨Àh»~¿uÇôhIĞ?Kfj’’œ¹Éi:X¡‡{ø~üÕ”{æFÀb’ŒÆzcGT³i¢r~y$ù‚®º?Ñó¢í€¾¿ á9…Aß±^¬Ùß‡>ÛJµ;ëËx©P‡¶°Ÿ?Ç¾D÷¸Š$DÄÂé“òêú‡S ·AÜ|e)«½8ë¥e	¦€Ë'xô»uÇWŞÈ/_dG••2©Y•ãmÅ”ÑÙ®1½ô=Şnî€ú%Ã%gƒ¢Yö™­¤,¾sOÿßH“kåv©;Şí! ‘ô2LT‘NÛúlg›A›{`û¸öø6 ¯†($Êä¯á2U]Ş#
+Y3åßh-™Ø®l	ƒCYæßxj
+ÏrSXˆ—Z_RÇ¨lk¨ì«Ÿ/²	 ºö½Fv¥#à]Âz/Ô½£JÕÃm£–‰„MÎİŒ×„Wæ&Ş.İ• Ç‚òŠNTs »*áòŸ$eŸöÙHA±PêAÉ…%ëmÖé•KØ/'5®f-;î}‹Î¨—»Àz”•Øë­¦“‡í¼^œTïÃ“}~b¦•BQÜĞ‚øGf5ÕO§fv
+õ<VÂ‡"×Ğı:F«%á5ÈMˆÿ¹Yˆ;$Cğx …A†QÃÑ×†bDÔ:³SÁt~)Ü°üšç¬ê-şÌæ ¢eŠÿÆ;‡"wÈÚnĞÙø·îaü]$®nm´f’-™Ü9œÜbTõ‡%f
+ÜÈš¾®µï¤¬p…’IR@Å’)~ûWN†*pÕb'èùRD£Ç«`Ú,¸«ïêwğ±cÄ>‘dË*ï‚‚†ø\Híë3‹akÔ=òÎ/±İ°5µË)Ñ68‚é<c¢‚ì³€pşFèŸq^\‹'Ü+–eó,$–sYÏ-(NÒ”É1j´~ OˆĞ™¾êÙıO†¬S(UY=¡gäH1#ˆF:áq GGô(üd	U*ÚQ1õhşƒÚ¢% šy­À¹¥¤ $DünÑ‰%~'“#6îi{ó°‹7™ÍWV—¬2ñÇc¹…†Ë¯s˜È18®`Ú›\1ğz£­Å3y5.Zÿ…z&Íá½:V©åòwEQ‚+'ôŒ<ığ~éÉRğe\Z	‚“ŞÖëSÉPĞê‡ñ’û²9~éáÛæ³€\°½ÄKéÇ¹ü‘ææYµïNşAöSÂ±®Óò4DFËE2÷D¨Hÿ¦â™€Ã5Şœü¥G6éMdĞaÁRÓÀt¸ş(~Gïe~ñhnÃ|OëôeŞğúMğH¯M]u1Ûnn+¾uF×EºRµx8Ø_½VZ=q‰»ºÁ¾×¡ª‘®~B2äÍ@{Ân­g9ÁD…>o´©c%^BñR!­¼ÁG‘7çhÏ·öAÑµ¯Œ—ZáÁ«{›öå‡ÃÈBú0 ?ô|_c½–[K¬ŠÜ¢~8Ç…SvÏÅæ§R¤òö\~Œä§•f‘€Lº|W•+\Åôò *½dÈáäcÃ¯ıyÎW–‘…ÒºäÄyøöq[Ë­Åÿv‡Õ¸—1[¼½ëœ“Ò…½öUWÏËC.›ÿÚßÁWî‘¬ËÂL¸>‰de±÷dgõÚÒgıh=à¿!Ø˜±ıÈu®Â©¾IT´æ˜ú|«Â¿^0—Ğ~ù$:_Fi”MÛ_S,ÏÕ¾>à)[ê3,½P×•ŠB®ÖXBŸDD†ËÔ,_ÛÓªTo å ÚñŒ¬ö^÷½rM·Ş•ë¿d‘ÁD“©i¶İ2hfçO¬ndˆ¨m»Îœˆ\!q«Úú`«$OÃY à½»ÉL}ø®Ä7W\ñ;#ë€ ÿ|8læE¤ì¡ÖSœw%
+ìIQä¹¢‚¤‚»S›‘Se‡îœğåb`ó¢Áw§y²MÕ5Be\šRg˜~(?yFßŸ¡²
+=âëû¿^İÌ,á6¶)cÕVºš AÛKIŞÛ3ªØÏ††Txƒ‚#ˆéh\¤¹¢Ós5ˆûİ9Ğÿ™Ã‡á*2IÍçŒê“ÜãE.ÀÀ#…ÑÚj–Ï©¤-&Õ«Ocm“F?Ìx¥´ã=u Ë¯0ÃZ	à»Ÿ±‹mz±µ\®„n éÓh¾4‘xöE®ü¯*uV=|³QÏê Mb‚Gö¶AŸÓXfEgRÒş€ƒŞ©°»«°®x'ØÜ}Ò<!I'Œtj[aMé¬l«mÚîù—@‚ow1 orñÌRuQ…Nm‹ı)ısŠ8~,C€áäóõiIÇ‚æË6¡îbğ5æRâWèË¦µìRy5ÆÆĞÈ¬"Ä©íézTs6- ã®Å£<n"QTboKõæ·==²mªÃjáz!oÃ†L\–ìñ†O6²:ê6*c±¶!ä]¬Ê€®ôQŒö´®/„w§’^ğ$İî=rÏøá
+§qoßÌ]’¶­1Çˆ
+=M‹—ìw6iÇ>åµl>%’¶á¦/h
+»I<IˆÆ•únË¨»a§ƒ¡¾B9Ş”Ä+(MrFëE[ú­Ô8è]D†·Ÿ©üVÂ"t¤ÏV ˜¿dœÏİñ#pŒš¬Ë,š"G/í´«?¶¦$DnØû§ Øs¿b @şÑ†ÌšşwúVªIv¹ˆ(ë9<pÍ ó`®ëÁÚ5åHö¬w•ËV©ÌçWùD®Ä¾+ÿ¸ß	RXUîñŸ?¬Bıùr³ÕåIWÄ@€oEØ4i"tÉ¢½Ú[°q	§åi·+¬ûä^Â†.B¢“?uJç‰BÜ·èÌ];F»üum7àaèà0G´yH»²•ZkÍÛ&ÒU°{Ìˆ‰ëëH:kú™MO˜~$“ûš²jq)·'Ò‚f€*©ş·qº¿²ö75ÃÁpE]g¶¦TC™{óŒ”ÃµÂßJôÆWäµ;²ÙP×ÒèºœVïÔ‰L9î­4x)Zì@)á_—ZS¦°8qù_=ëÕ¤<Ì_`­vÔÓ˜Íóv/Nl+Læ¸‰ñ\’š P­÷Eb©“¢ˆ¾·Ü‹µ=æY=ja®~ÂÇ8
+PTÃxŞ¨­}Å×*gÁª|§ìa¢‹ì*¡UI¶$ùÄ„.†tC×
+ˆ‚zÂ±¬å°VBLgõn•)g@RİaÛzpQ÷UµéÛ5÷ı¼À/ór’×N‰% ­ı¬~ÊÄ{£CY¼×h"`sX¸”Jç‘ŸÎRîsÔê€gA5½òéå†ëgŠO>ä”,X5à;9w52(AmÊ6°tyy¦àß·îˆiÛ3-¨ÂnõæRİä“ÕsdeíßKngÚÙ1OşL‘švÒÄVÔÂqKrlñLñ÷ºİ#óÙ	¥‡O¡œ’²/î—	¶(? è.sedXÜê™Õ-ÛóÁ±ªšç¿é²O–‡}¯,¬¨ïÙ!˜š°ˆqÌ:>qƒ˜CĞ¬We=âŠlq©¶WYëv	s‘ÜŒÔEa§ƒÀJ'6;jï]µ­²ö÷Î#†6€[¹Ù‹
+|!1ÌôPS®ô%É«–©±¶Q§\ÿ°Ğ|€ØİòIš=œj(Oûô%ïØ–šl0º}ü?ˆËA:œ¯Ny½ıIê©)è¤}Š½­(<6h€¡>UTušâRµÇ£¨Í%ïÍÁ_Ç¢ËºœÒù{‘ßW‰7›Ù3šX®¡?!İ¦â–¹©VÉ<eN“Óëæ)Ue®ë…2r	ƒæoqe¾É•¼D‚È´ı‰E„Ôµ /¬P“xß@vë.8°p/áM…ËÁ¨^îQ‡–ös“œCfY·Kr©b•Ï=(çƒ!Ò5¾¯éŸ×¬„i~IÎ5iÒÊ&ó\şHŠED|WpLWíz—¸Ø<“OÉ‘|¤ÏrFœ|mÌÌ)á›3N@ø}>íë4úÀ }ÔC%^Ï|ıŠˆÚá¾` íuÁRí)dS‰ˆ”c»À",Ô­&Tù<~>îø×U¾£…×2UBÌw,d]Â<™G¼e»>¸.âìzÇ¤R„sì®#ÿ>Ïıtªa#eLö²Àf8x”ìi1€½eäòõ@‚Ò:Kì†¢N6*ï¨8Ì9*Ño/µd"n’æIæèPãu‚½›>±G‰Á;™ØœJ‚Bc+¶ZsGÓöL‡Çø¢
+@ó§A?ÖÅïÇqÈL¸‚¬Šîw4ŒQ®8„¨ñf1ÖGpE“™Û”QJO¯HÅt§œJ—üÇ[ğ°‡uAø.¡/E;²TD$(Wª?ÁÈ¿z;oXç ·c%°JIK 9ûÙ¨³›½Ì÷j&z®ƒ@D˜jçi9áC”´;QôÁ*8 DN>³’¸ÉªU6ô;Ş§Yï.ÍON]Bh„z°œ×¥~vÒø§ 8ÔB|ÛÉX‡‹dDóvo v¸h9m½;èbgUÓ)ü TlJ¿ºMs–æ5
+h>LA6ÿ¢òç@n'"şB%³r”ñ½€MíW,_ûróîğ+÷NÊ¨Ò½.›6”S9,œonæ©óÈ¯¦xå7QdÇˆĞ0ÄÇ›Yvp£ˆZre¹ÁSZºox®Ø2n(İ ‰éJDp¾iÒÈ/Y“ä|“i.ĞˆkuAtªæg5 M†C×') (Ï¥LìîåìÑwN“¸R×rÚk|hl
+w ‡úÌcÅ",W4ØÜãCÁÀµ«ºá—Şù=Å!gI,ÌŠWŠmªZŞC’×J§%éé°Z5µªÛ½„¿ş˜¢ªL7¢>ï$P4¾Â•pg¦·¦)ÆÎ,0”l˜¼¹6ÁRíréÑâú–\=fê6&æÔP˜©@ñ†_š9…Óqn f¦¤¼2Oşóq+ÒlNxÛpÓÄät×`óµË9‰e!Y/5ˆ{2c/WÇtzëî´0Ñéa2Ö×Ñ1
+¸İ©nu$ÛÈãôSAGŸIá+ìíÂLsCéºæŸeÁ…nP˜ïï^ìôî1jj[ıø…ÎØù(øÌ8Ìc¡ÄüôÊ*÷wéw`zÔ«‹|SÎvš SÕ\¿Xvı6èëb	çûSPJ¤¼	ëÓ Ì& Íœ÷FAsSšXÅ4x Ş‹4ğú|B²­:ªQŠö[Úh…Å²€Îes>âQh¤[kæy±Ù‰08òğÊïŠTü‚­fÌˆåèÌâ(Û²}½7ºf,±¢Ä,Ì´'”+È¾R¸Åil?K–õ„2C%¨_Õ»œ ó-7¦>;”+Ì1 š"î§³Ö¬:ˆü	eñxˆc[íåÜJÕÁáÚìy&ñ›díİª•ÿØâ$^ŸÑ6ïâè–üp¤•?!?yº&‚'øš›!ºP‡'l(Ä£p<õt¯Êš\^JÎP©±
+	q~'ó—¸Ò¨ßECgà0ËÚºàÆƒ*9ÉâxqikçÕY÷u½ËVşD§Ë'u8ïuj6’\ˆ‘ö[1ÍVp¬ÎlsË<£İ÷dq½ãP<®ª×¬^áŠ„zì$ÄQÙyuu½(^= †@Ç&×xÕô|f¶šçèÇ«>Œ˜À§µÎÊl[‡èùe5v£¤c•²Ÿñõ,c+û°áGîèĞ#@bG¾Û‚3ô?LôÇØ‘ÑT:]M˜@¾”•GÖÙ›à×›¾SÜ—îW—Ü!-òö©¤Ùå…½Mœ:g¢ª{#ÄĞf6ßk:<ÔÏ–Ö§	ƒ#hîi©J'ÌØ`8…O?ÀºÇàs%)]–øŠötÏf8?ÙQî>£ôĞÍ¸ó¡×'+yX|µ‡wú\İ•ä·üdßG¹9ÏôÊ¬B%t²NA`e©FŒMÄhb>Åø/ÓİSë¾I°½‰F(krÁÜLN,ˆ*âš‰iq„ú¸ú¶¼q*JÜAOÁ±şÂğè<{}M*¸	¶ÌÚ`EHÇ‡Lg‚Â“A~|¤~lnØŸ÷ ü†PôùK¾GJÒP|„şı‹'xv?Âv€jb(S‡I™ªHó	x2|Ao´aP¨×J{¬K’ĞoéÁ®lêûà«°„yß‹€†TÖ»†±ÇĞß:´ŠV;k%` 6àñà%$ÈÛÙ»"y«àáRSuc›ëo…š¾ ËÜÔybkµú[˜;âÁ3å‹r“B@ ©Ü†;5 öÈ)dŸ·h¡ÆT¼jöO¥²šÊ&¤_|GÌØÉC‡keYB¢‰);#&”İ}¡çì%[åKâ×°‰·”Ñ
+"}B>:®!!ãŠ±¬2òöE0=g‹d’p?¤ş 2´tÕœM…Ş“à"0]„ÀOÓí=š†~Å»õ’•ú‚Èrû‘+ğU¦®ZÉ%¶~(§Q'-¦º²cÑÛê;\0 ófVe
+:¾èÛÛãØåEô¥ò„Fõ“¿"Ô@şÈ3Gg½¨]+—Ø¨Í…_ ã«àÇØYĞİ~Œ
+ÎÕ|a\ÕçØÔÌîöjÓs<ÙºÓ³g T¦,~BWÒ×Ñ=~^şô@M¾…X@yß`×­!»º·ÚjŠ~á@bT¼`yº}])MSTĞâÏ2§\ÆÇ-_|vPÎ¼‰ÖûÓ–]¾/u/ìŞ5²¶\ÈLTè¶g7?&Ö9e»®ËW,Ş£‹š<ü¯W%º,´¸a¦ò,9›ÕåÏZ¾rEıÙlBÊ~sHR5Š¬IŒOaßªWâŸšš7ë“àò•½â—!æ™‡o²²ş´ıK^{&ƒvÿƒø¥ :cº~œ‹oÓhT²ÔÈªğG]	÷æ¿„;ı:|(à|ƒfmşB0¿v±S{êZi!É_·‚°x·åÕ u<©q1zx“PïfCa±¢1k`™¡t^+(Šøß€³çÌ¤ô§”Vì{—Ô›•NtÈ"ës0Ííà&ŒS<Á°|77Ï3“Oº˜âmöüz‹><ÀZÙ §Ã/¬^­’Âß$(Rõ*mj7ò›E;”M?ºº‘_VóÛn4+ù]³£ÜSyßk«‚€ Ë+"½%&Èå]‹Í±˜yd4âŒXå œæsSöîYï7œ7æf…È¶òv9Ş£¸I¸0ãÙ_)PFıÒ’|®«–²‹xkA‚†Ñqí'Bs<e1£şH7åKx"Ã…ëy“¯Ft5f°¨I»wì·şK_øgy7ÔA]8oîßk[WõL‚UùX•H[ÃÏ5MûÀ¦AmiQ¶ÃÌ:A?dÂÍOªMó·Û…‹º=#eJ^fºBû[€â–q˜pŞ8TØĞIÚ}
+½”Îöşíè¥m¨:öâv¼îeì«Ôïğ>¬¯é^®®»¢-Zdî&ìÃwæ²cÚ§KÈ^É<ke
+ixA6³¼Ìµ¨Š)†/œ¤İõD	>K†\£ZûÑA]ä+¥ŠPÄçF/¸ş—M´/™Ş>‚±†-z@G¥/4yœ4Ó¡y@7N$	'ÃğìúÔ‚T‹Êƒ´È7À€èÔÖ²cY·Ì·Â:ÛÇ,J„D‡ßÁÉ4V?wª¦H:øÕto‹¹¥À»²Ğ£.rÊ.8_†"I ¯u®ÜŠ©ˆ¥îİ|âµÔû_ªz~SIòä)@Hõå.ß,Œ\–è¤øNïäsrUÔƒ³ÛËº¬ıHTdìílC¢£îUi¢c¨[±ø¬Q§‚mMìŠ¦•áÆ„Âr¤u„Ÿ°‹¬¨ñºNQõÓ[W²~s”ÆÊxÿz€z“y!•ÀÅ7=‡tIy(z¸n'ÇÉßI†‹O$Vt
+à>¿Q­
+ğ6şÅ«cĞ …>³³ĞsªŠHN:˜I¥)±H+KÓ÷Dô,ø÷ï“º½«¬•ÑL_÷µº)g9V˜_ÔŒ[6%âÁƒM•Vu<%†_ãiÊ>˜ÙPs¿1»}ç¿LxiöœAí¾üÅV*†˜q‰iR¬­=ş#Ü,qÕBZ#°{60,»Ç¿•«dƒÄ¤Ñ*²hrs…5«´êD·ê¬"WN¾‹‹nEÍ›Ã“WsáÚtá<`Ò[áL1ˆãìå(è¡ˆsÄjNRéê¿ux‹>&_
+<aÇû8oB0€ª>>PfóñÚWYèÜsÁ-0ñøÓ2C’Õ	‘™@-–›=~/>ùP=
+“/BĞ³Rráxİà­í[ğc³¿O‹ø{sb¯[ lÛh´?ä3†3ËU€.äIGºhII6‰KŠ“¨ªGZ"²-Qş'·=tß‡O§¸)Êº›7·ÄÈ`ÿêRšØsÌHÔ¦>eZrøMîº¹ôç`å4M÷†(—ß[%nƒplµ
+æc–s­ëô[2 Lß`=ıµ¾5qP…8¶ï«¿g)P+Z÷^C˜ÙÜÉ=ä©Sp:­û*Ù©hyÛ ¯‡äÎ`LM9í—¶ñåPd¯Y'Aæß­:këug½Œ£Ú )8¯?2­®çº¤î:2	Nf ¿qæ`0;Şçñ%äYèwŸTs]Kãÿúó7lŠbÕpÓVø¬õÙ®Z1¿°ÚÎü¨×l`l*Ğ%ïE:^y^Wmp6t>™^®î,Š4€ xÄøVôï¶ ªEÉFÑÜQ<ıG =+«æÌÚ²Ö:mÔ¶ËÁ‘4u'!Í¹Y"M4¶UJoG<Élï>È²A,ğ5¢cğ:‘ÉüZaÏN5S~ø¼Œ‘­³·âS,±ŞåßµRôcÚ˜µÙºCr¬ é½ıÛœ#~bBìUãøV¾ ş3V_òa®BWd–£ÄéóÑçfÔ„}îF2x˜J´G]ËF£¬9ŒÃÌÿŸ±³sq"¨ÚZ—‡0N6IˆñIÁƒwŠªÁË£^‹,KG*‹Ìµ -)Ì}©•Ï @E S~DãoÅG1\z–;ÁV€õpeˆõ×Ëh¡¯]‰[—¥tD¤I?e@WÔQ7:vZ­Qã+©k¨oÔ@ò üĞ_YáâoÇ·P ÿ&úRü…ŸÅ=Ø;.,8|vW£,4)b$¤;ï£Ìc‰°øo<Ô½®ÖGĞ°;.ÃöøëºzOÄ8R •ï–$;¸ñ5ĞÂ_62(òWö“2¡Æ¾MˆQ_6[._Ş´Ğp³š_ƒ‘/ù¡VKÊ?)2÷… t“Ş…L…Šéns¥(t	‘¥-#]¿x÷ÿs)ìR_ÉŒ'duh
+SüÉUÎCüï%¸ªY{w6èiÛƒö½'ÉËøU&ÓhÑß•DA©(Óê+DãåÙóLËY6js—Š>üÌMLÜ”¾a‹*RSÕ]LA\):UÀ¼…]¬6Ç#)6™Óh\ŒôÎ^thş·˜m—Im;!óä,<êÄİ©ÈND¨’ø Ö3G´¿¥Ez ïs3õBŒöåu»Ğïä¶×»=`{L%°p6*5d‡ä	Ì[5oŠß‹WöÀjq’P3­FÒ©÷kã%ÔL Ïª_¬uÓ6I\Ôc!L8
+­ u_w¾ã÷õxÑÂ˜OÀÖ6ğÉİ½Q¹c8ÉİÓBàe¥(m7™ómSÂˆã|£q¹w­du0é‘¬0.½Àí^G"Òv­	ÈdbN¤›J !›ÿLeÍ\sœ+Çp,8‘ÅaûnÂÆË{[’bV™l'–x€k¥†#¸F#%m	\$È/¸ó3ExåYÜ¡,ï4+(WpŞ„ya‘[.™Nô¯¶²6˜âÅ1¢÷üÈ2+.ÎÔÛp~å‰Š¨¤Ë1qo‘Èyæ EE¬Ôgm–oÑÙI9µmÄôf(İÃ<<{ş­VÊ5–äBqÚÀ%|wª•óWg!³fBßßVqLG`å+¥°~Zê3ÖÁÚ0
+Ş±¡Œ’XF1M3Æ6Lqãà36şXœ'”Md9.4î¾_¥C'ÔÒå$SÓúz|‚´ú#‰ûº†p¼~¤Ûc	®ëÊÅ‘~ûc²>6^%³“ÒjhbæÚ#Û"Ï›×›yFjİí¨~O¤Íì(³KšëY³ÈçœOK¸Ë;«ŠÚC%—
+é§D/äÏ˜Wø;Å®Èõ¨r¾CIì06Ú7•¸ }K&Ùˆ„‰Jã!wc×µ¢QÂ>O±mo>1zîQ*mI–Ç9’’(gUk.á'Oî~½ÄyUâ‹„Ñ
+&åKe»hê.ÕAñ’^îH?OäÖTxè€uGPÖdñœ{ÃCİ­>Wufqöé×;0ƒ$`9gâ¤$7v·Ó8Çˆ´\Áô¥ğŞóñ\ ’ğ8ÎÆs~—İÖ¾¾)d`EªLLÀ­”üù¥dÌ|¢^Xá»=£o4†<å©ì°^:VÁ}ç;pá¸rµÜX¯{ï³ƒßâ9ô·ÏffV5ÛWo&‘­Aò€}ƒaŞïömt›„İéæD#vÜF¨>»ï§;»AyÑv“ÒÈåSPá¯k7š~EmŸ¾[ê@¦ÌdDI ÷Ş0%Ş¡Tì+ö(×®4ÈT0à‹y>R=5ñëàUöì.±»ÈDaXAğ
+™2ôâĞ´Ø'd‘÷Çb×ÍX^šÁÉ¥xË&XÅ)AZÚÏšõ!ãÃËô‰ã‡Éí…ƒ¼‹
+@5	2zdœZiê³¿;Ì4}Á»Sœ%Dd)‘sDvM õšĞ¾¾¿¶$Â¯ß¦mè,ïMx}v×&sÆx{…û…íäÈµ&	h>x™ŞÎã2R&©"¢¬øÄcŒ+¹ÿ˜#¥{M=µT­¿¾k/“Pé½sÅ™²7NŒe¤O(e 0~µU!ìænô¯7ÃÇxS—s˜ÿä¼Ê'½Û÷{èÔCdúfâBÊ<ænæ³VuØœZÅàX¼*µVÓ9µ  ÈÖº¼~‡5#GÁCÍ	Ò+ƒúÒñUx§×_ã[}ö®È‘…½:qbŞÆ¦Ú8
+ÏÅ•;RÙ;º[79j-c¼5Ôn™xq_\k‹—ğ„Öö®ÚlL…Yo‘6-®J¦ZçñÔˆån”Lß¿R¨¯zµ\î´›dú¯¦…¡».ñÓï#¾§>'F§ûñäÑÉ›!êJ7²¶©wQ¯›Rv¼SÆ40ÕËû¾dXTzˆÂn\Àº‡Ş×pP›j{ôÅÅm»¤2ém´'_ÛÈ\Tò«şŸJî¿a2&D´ÅİptñİÖ>ƒ@y¿#tıUŒWK¢ª†g B±	tØã·‡ŒE²òBÇˆx`­+„øøiø¡øÎİu:éE‡Îšıˆæ%±©qgÜ6Ù^ Fø5ªËü¾ÖÁFiu¿e‚P•»
+G²_‚¤·cÄ=!¬pÃI¢ÌS·,Ùî´¥FF“n¢Ùè;PúpF)„ Ñ@ôœ{Qş ×$K«aIôĞMsWÛùø7˜¨ÑÔ6o>eĞçnIc¬gËTÂ°	NF\Çİ,¡€¨dÓ[\X¾/€úÓjStŠƒH\î{cÔı`1c»8€¤ÙÖe5SŠğ«Ñø–ë²q(Hs²~ŒâØ¹å:dïù‚ÏC=ì~È0v¡Y?Õ`rbRƒÅÑö`û3áL×u¬ Ö¡×4†”Tb¶ÄİÏT‰pÇÌ¶g)å'VÕ^5™Æ@Şñ"‹’7xOÌ/¦#¤mè¬,¾’"„‹ó$8ÒõÚIt¾oŒ3ı×çN(U±£]×ÑC1aù|ú3·cç¼ŸÚÖ÷ÿ‡ ?¿>hv=Å­OäÌeùäŒ}nŒs–+»¨’×ÜWĞñ(¨³‹À]ælÑØf²Ò?Š åjÏ­ÒQµüÔff^@'–¢Üš†•ÊñØæôÎ(F?05±4á‘³Ãˆ?±&Ò¥nŞì+»53aÖ×ó€ø/g1ßu"İ³ë1¬
+QGF›6-ôl $Í:®	XÅ_ëSóÙ$Wá„)_?İhûV„å!%¯Ñ¸JˆÄªÒgµn±Å2Z‹Ë›/c¼Å­x‰ÊÌ£´çÄ©?$~õ â¹µmØš° Í.4Ùş¯ò·ğ¯¢Õ.‰Œ©zlÇ/¹Ä"-mœ¡@M»<ÑTO ÌBzEçYáëRõ	µ5ì~„.9õ3¯]Ê8â“*±CByiáuCŒ´Pµ-¨hc3ñ£ó"ØŠ’¹~L72ZBO¥2GœÂë"Nı9\øî1À]N¬¤¶õÇNñİ3!ì¹”ÔäàzæŒû‰ “W3	³+(œ
+µéî+Ü¼ßâ†áYú³×’ÎmƒvÒ˜UÌ	…šMÎXÙü-¤äøk5Ñzúñ¡yˆy‚æğÄß©ó¯1æ	ËÅz¦%¿÷ÉKRDO;‘rfx5ÂJ•­(FÓËiä$ùˆáÀ_²Ì \Şñ_›†J	ü4ğQ’ÄG©_õŸ‘g3ÕÏsK"1¥ó<6×˜Z„m&š•uHË’0İ6ú	$rê:Â°êcZT|G.ò¦ßtàÃÒZzkÏ¹€’M ½§ª¿œD°)ªğ™¯îr†iq¤B:A~¢X)ìµQÂæ‹¬ğ#Ï–å²ÑÎg÷QŞÄôÛÅuq'f*6eUSÄWPMÎ1,Ú²ô¾W˜í‰Õï8²+5ËvRu}+=hîÚ¼¾¬¡Ì*BV’	¡8sR17ãi¹vh€¿ı¥­/ø{ Bšéµ&ä0¯‘y[}”ImÊ8)±’e‘:%²ğùèGŞÀèBàä#Â|$cÁ·ÿV€F‚«í@;ç÷"ĞjÕWÂE¯PfˆûØ£ªKû ğİ¡t\$úÕ
+u~¿ã’ùËj#C0h•kO;ï¶Qazø¥î|wKaqzUx4G­ÒqQÔ¦m½>lb•µF”Ğ»9övæù¬Ó?í ˆcuø¬öÖåDZmw<İĞ4âÔ¬9ï<sGDÖÍÑŠGÚ;#Ûb+³ØÔXX¦^ğngw„2¸ò(LCË¾>Ëe›·#øàŒ*gİáúu#È`3öü†õÓKˆV‹Ş•qÚnlŠ,øHFÉqLËŸ%ëeQÛ¼Ì5ûÖÍ$ĞIH>`[0ï,«>ğ‹à×¾ÔZd:öfYÉlÀÿÀB’^ÑÀ[ƒÀ&¼¢MŠ› 0â'vRM22–±äÎöl¹“™K¡x¸Zjåärp“jOŠR °×–¶êfÔî#´™!úï5‹Š	j[à@ñ5÷î‚µ~¸(±zÛ¥qY‚°Üñ{¨D8†Ïˆ®ZòGÙ^Ä’{mkÑ!‚s‰’IßJŸ>ø+•š<ê%’Yáã…nTX3yÒ°(#búêgœ§š+$™è¨‰é1ÊúÎtk|„…‘“¶éCØ¹.ï½™‡âŸ‡èÙszÄTëSxÌÒzRüÚEF8 <BzÍöôU‡z¼Ö.ïhÉ£”ıÑÚŠëıÂ¼Í^ò³¿¾úê;f(úO1“…LÎ©f±š’NÕ=dø]æ†Û ¬„‚r?egœƒAÅê¡Í‘Y ;Úv	€‚ ôÔŸ{É¨5$¹røº¦ËÔ—¹cf¯»ÇÕ©wOYî–e@½Ãÿ3%êîzRö|ÛÌ4 z±=â
+Q?+”O—t'’*\ZbyP$™uUtX€CiêsïÖBŠº=¡j¬óiœ)w\5œ¬¿@8ğ“Pò6Ä¹ŸãÆmîë%é…:&îpÔ“a*ÂdEÍQ@Ya·´ÜŒ#R‹ÛÌ¥ä¶Î‚}%\½»ír(2.#÷ÉycQ7©¸)áÌ¼¤G0«~İñ)5œæ6ÖËvÕÒ>Ã´oÑÎJË€XÖƒ°ˆöNİ,b#S÷Sâ›À5¨#¡£ïŠH—+Ÿ^ö•neºe¾»ŠM´â)Ût6ç€öÅÁ°4›ğö35¿œU¥+·°1r.ØNœA~XíıÍ"8i
+/§\ÙÁnÜ"õóm¦Ì+ÛS8Ú|?@„0˜¶,±¼‘"çQŒ6lÙD^7¥ dk†Ì±Ò¼ÈQ%XìD¢Ë|â'£OÛjïÙÓ$U§«ë)w Am#NnóVæcò×¡ŠhÚ£]«3GE],\¯BéÇª³48<«ÕC#ĞÉÙ¨¤\´»„”@2¯;#*£?†G:¶õW'ı£÷×±Ô š¯§@ˆxØ½@êÌã^†¥Û*C5Z†ºH«¤'<a¡şáUNçRÔŸıı0`.¥û`JÕóZ¯k(¨z…›o¥êxàx»Ñ7_vªk¸L¡„™ÓPß¾DşF¨ /Š›%‚›ç‡!ˆNƒ\MÌ”¾Ô$­Œÿ=Ú¤¦¡Ú™ğğYŸHìµ5wZ0 RnÈ›„²ù´;(;†À‹lÜWönPĞ‡¤ÄëReÏ.@`˜RÅòÿ	'4­3M‘_ä[­ÜÃT¸v2k­Fí1Ó¤³×À“t=ÌÄCŒEE¡äF©YGKe‹üÃ°\9–¡ğ¿@¿ëQ3‰pŒ.×Ê´…=‘/«	Áİ—M9?„ÊFìË[éEx·Á
+
+    11.1.     OS/2
+    ==============
+         If intending to run the DIS DOS software in an OS/2 2.x DOS
+         session you should get a copy of sio126c.exe and install the
+         communications driver in it before running DIS.  sio126c.zip is
+         available on our ftp server or via our guest download account.
+         This is because the standard communications drivers do not pass
+         to DOS the buffering of your 16550A buffered serial chip.
+
+
+
+12.  Individual Modem Settings
+==============================
+
+
+    12.0.     Setting up a kind of modem not described below
+    ========================================================
+
+         To change the settings of your modem, use a program that can
+         talk directly to the modem, such as a standard communications
+         package.
+
+         (*) In Windows, you can use Terminal (in the Accessories
+         Group), setting it for the correct connector (COM Port).
+         (*) On the Macintosh, you can use ConfigPPP by switching
+         Terminal Window on, and clicking Open.  When you are finished,
+         switch off Terminal Window again.
+
+         Type the reset command, usually ATZ <RETURN>, and see the
+         response OK.  Then continue through the list of settings.  You
+         can type ATI4 <RETURN> or AT&V <RETURN> to see what your
+         current settings are on a lot of modems.  For connecting to
+         Demon we recommend the following:
+
+         Use V.32bis modulation/CCITT protocols rather than HST
+         Originator mode
+         Local echo ON
+         Duplex OFF; receiving system sends duplicate data
+         All result codes displayed
+         Display result codes in verbal (not numerical) mode, e.g. OK
+         not 0
+         Enable additional error control indicator, e.g. LAPM/V42BIS
+         Serial port remains at fixed setting
+         Modem send CD (Carrier Detect) on connection
+         Terminal sends DTR (Data Terminal Ready)
+         Data Set Ready (DSR) controlled by the computer
+         Hardware CTS (Clear to Send) transmit data flow control
+         Received Data h/ware (RTS) flow controlled by computer
+         Received Data software flow control disabled (make sure the
+                 modem uses hardware flow control, and switch off
+                 XON/XOFF flow control, also known as software flow
+                 control)
+         MNP 5 data compression disabled
+         Variable link speed negotiation
+         1800Hz UK guard tone on. (Probably AT&G2)
+
+         When done, type the command that saves the settings to Non
+         Volatile Ram (NVRAM) (usually AT&W) so that they areremembered
+         when the modem is reset.
+
+
+    12.1.     Setting Up a US Robotics/Miracom Modem
+    ================================================
+
+          To set up your modem, use a standard communications package.
+          Type ATZ <RETURN> and see the response OK.  Then continue to
+          make the settings.  You can type ati4 <RETURN> and ati5 to see
+          what your current settings are.  For connecting to Demon we
+          recommend the following:
+
+          B0     V.32bis modulation rather than HST
+          C1     Transmitter enabled
+          E1     Local echo ON
+          F1     Duplex OFF receiving system sends duplicate data
+          Q0     Result codes displayed
+          V1     Display result codes in verbal (not numerical) mode
+          &A3    Enable additional error control indicator
+          &B1    Serial port remains at fixed setting
+          &C1    Modem send CD (Carrier Detect) on connection
+          &D2    Terminal sends DTR (Data Terminal Ready)
+          &G2    1800Hz Guard Tone
+          &H1    Hardware CTS (Clear to Send) transmit data flow control
+          &I0    Received Data software flow control disabled
+          &K3    MNP 5 data compression disabled
+          &N0    Variable link speed negotiation
+          &R2    Received Data h/ware (RTS) flow controlled by computer
+          &S1    Data Set Ready (DSR) controlled by the computer
+
+          e.g. type AT&K3 <RETURN>.  When done type AT&W <RETURN> to save
+          the settings to Non Volatile Ram (NVRAM) so that they are
+          remembered when the modem is reset.
+
+         Some US Robotics occasionally mistake a System X (and Y?)
+         ringing tone for a busy tone and hang up just as the Demon end
+         answers.  Sticking a pause on the end of the dialling sequence
+         stops the modem's response long enough for the Demon end to
+         start its negotiating sequence.  This means that the confusing
+         System X tone is ignored.  If the Demon end is busy you just to
+         wait a bit longer for the BUSY string, but not as long as the
+         setting in S7.  Add a pause by adding a comma to the end of the
+         string.
+
+
+    12.2.     Apple Express Modem
+    =============================
+     Just AT&F then AT&C0 to disable compression
+
+
+    12.3.     BT NS 2232 M
+    ======================
+
+         (Note this doesn't work reliably with dial, but does work with
+         TIP or with an outboard Kermit script.)
+
+         at &f0 s0=0 x7 m2 &u1 &k0 b0 s30=26 &e5 &r1 &d2 &c1 l3
+         &f0 - reset to factory default
+         s0=0 - suppress auto answer
+         x7 - maximum message generation (for diagnostic purposes)
+         m2 - speaker always on, so you can hear retrains
+         &u1 - RTS flow control
+         &k0 - CTS flow control
+         b0 - CCITT mode
+         s30=26 - CTS follows DCD **, plus defaults
+         &e5 - V.42bis (and LAPM)
+         &r1 - RTS locked on (??)
+         &d2 - DTR is Data Terminal Ready
+         &c1 - CD Normal
+         l3 - Speaker loud
+
+         ** the theory is that it would otherwise try to track RTS when
+         that is used for flow control.
+
+
+
+    12.4.     Dowty
+    ===============
+         Dowty Quantum 144
+
+         To configure this modem for CTS/RTS only (hardware
+         handshaking):
+
+         &k2      Use CTS on transmission
+         &u2      USE RTS on receive
+
+
+
+    12.5.     Dynalink
+    ==================
+         Dynalink 1414VE: AT&Q9W1S37=11S48=0M0
+
+         &Q9      The modem will attempt V.42bis, fallback to V.42(LAP-
+                   M), then fallback to normal mode.
+         W1       Reports the error correction protocol and the carrier
+                   speed used.
+         S37=11   Sets DCE speed (modem to modem) to 14400bps.
+         S48=0    Disables protocol negotiation. Forces LAPM.
+         M0       Turns off the speaker. (This thing is loud!).
+
+         ATZ or AT&F as the first command as both of these seem to annoy
+         the modem into false starts.
+
+         ACTIVE PROFILE:
+         B1 E1 L0 M0 N1 Q0 T V1 W0 X4 Y0 &C1 &D1 &G0 &J0 &K3 &Q9 &R0 &S1
+         &T4 &X0 &Y0
+         S00:000 S01:000 S02:043 S03:013 S04:010 S05:008 S06:002 S07:050
+         S08:002
+         S09:006 S10:014 S11:095 S12:050 S18:000 S25:005 S26:001 S36:007
+         S37:011
+         S38:020 S44:003 S46:138 S48:000 S49:008 S50:255
+
+
+
+    12.6.     Gateway
+    =================
+
+         Gateway Telepath modem: AT&K3s48=0s46=138s36=1
+
+         The modem works fine at 38400 and most of the time is OK with
+         14400 carrier. On occasion it works better by setting it down
+         to 9600 with n0s37=9 added to the init string.
+
+
+
+    12.7.     Global Village
+    ========================
+From a user:
+The specs for AT commands for a Global Village PowerPort Silver and Gold
+modems are as follows:
+AT {code}       command...                         action...
+    \N5 (Set Operating Mode)            Set auto-reliable(V.42 LAPM only)
+    \Q3 (Set Serial Port Flow Control)  Enable bidirectionable hardware
+                                        flow control
+    \J0 (BPS Rate Adjust)               Disable port rate adjust;
+                                        serial port rate independent of
+                                        the connection
+    %C1 (Data Compression)              Enable data compression
+                                        (V.42bis in LAPM)
+<these following could be helpful...>
+    &W1 (Store Active Profile)          Save active configuration as User
+Profile 1
+    &Y1 (Select Stored Profile On Power Up) Recall User Profile 1 on power up
+    &V1 (View Active Configuration and Stored Profile) View profile 1
+
+
+    12.8.     Mistral
+    =================
+
+         For an Amber Logic Mistral FX144 modem.
+         Use the factory defaults and the following:
+         &E4            Forces the modem to reject the connection with
+         the
+                        'NO CARRIER' message if it cannot establish a
+         V42 link
+         S31=2          Locks the DTE baud rate to 38400
+
+
+
+    12.9.     Multitech
+    ===================
+
+         AT&F
+         This just resets to factory settings.
+
+         From one of our users with a Multitech MT1932ZDXK V32Ter and
+         fax modem:
+
+         AT&F&E2&E7$MB14400X4M0S0=0
+
+         The X4 just gives you full result codes - not essential unless
+         you want to
+         know exactly what kind of connection you've got.
+
+         From a Multitech dealer:
+
+         &E4            Hard CTS/RTS
+         &BA0           Baud rate altering off
+         &E2            V.42 with no fall back to MNP5
+         &E15           Compression on
+         &D2            Hang up the line when DTR is dropped
+
+
+    12.10.    Pace Microlin
+    =======================
+
+         AT &K3B0E1F0Q0V1%C2&C1&D2\N3
+
+         &K3 - RTS/CTS Handshaking
+          B0 - CCITT protocols
+          E1 - Enable Echo
+          F0 - Negotiate connect speed - may want to use F10 <14.4> if
+               saving for use with demon only.
+          Q0 - Enable result codes
+          V1 - Verbose result codes
+         %C2 - V42 but no MNP5 compression
+         &C1 - DCD follows carrier
+         &D2 - hang up on DTR
+         \N3 - Autoreliable link - use \N2 to reject links negotiated
+               without error correction.
+
+         AT &W to save as default, or AT &W1 to save in second NVRAM
+         section for recall with ATZ1 as modem initialisation string.
+
+    12.11.    Pace Mobifax
+    ======================
+         For connecting to Demon we recommend the following:
+
+         Command   What it does
+         B0        Use V.32bis modulation/CCITT protocols rather than
+         HST
+         &C1       Modem send CD (Carrier Detect) on connection
+         E1        Local echo ON
+         F0        Variable modem-to-modem speed negotiation
+         Q0        All result codes displayed
+         V1        Display result codes in verbal (not numerical) mode,
+         e.g. OK not 0
+         X4        Gives full CONNECT string
+         &D2       Terminal sends DTR (Data Terminal Ready)
+         &S1       Data Set Ready (DSR) controlled by the computer
+         &K3       RTS/CTS flow-control
+
+         When done, type the command that saves the settings, AT&W, so
+         that they are remembered when the modem is reset.
+
+
+    12.12.    Racal
+    ===============
+         From a user:
+          My modem is a model Racal Maxam V 9600 baud, about 2 years
+          old.I have been told that a Racal connected to a US Robotics
+          the Racal can detect a higher baud carrier as its own 9600
+          carrier.When connected you will get lots of 8bit characters
+          and the modem will then drop the line.This can be solved by
+          forcing the modem to 9600 and not checking for errors at this
+          baud rate.
+
+         The command string is atn0f8&e0&w0 for a Racal:
+         n0      - Do not seek the baud rate
+         f8      - Force baud to 9600
+         &e0     - No error check
+         &w0     - Write change
+
+
+    12.13.    Rockwell chipset modems
+    =================================
+
+         Rockwell chipsets are used in a variety of modems, namely Supra
+         and SmartOne.
+         B0  v32bis modulation
+         E1  Local echo on
+         V1  Word response for errors
+         Q0  Modem sends responses
+         F1  Duplex off. (Can't find any not to)
+         &A3
+         &S1
+
+         There is an "undocumented" feature present in the Supra
+         V.32/V.32bis FAX Modems that can help improve the quality of
+         FAX and Data transmissions.
+
+         The AT\E1 command is not documented in Supra's manuals, but is
+         present in the Rockwell V.32/V.32bis firmware/chipsets on which
+         the Supra V.32/V.32bis FAX Modems are based. This command is
+         documented in the RC96AC and RC144AC Modem Designer's Guide
+         from Rockwell International.
+
+
+
+    12.14.    SmartOne
+    ==================
+     (also badged Best Data, CalCom)
+         &F      Restore factory settings
+         B0      Select CCITT V.22 and V.21 mode
+         C1      Normal transmit carrier switching
+         E1      Command character echo enabled
+         F1      On-line state character echo disabled
+         Q0      Result code messages sent to machine
+         V1      Result code messages sent in English word format
+         &C1     DCD indicates on-line data carrier detected
+         &D2     Modem disconnects when DTR drops
+         &G2     1800 Hz Guard Tone
+         &K3     Enable CTS/RTS flow control
+         &Q6     Select Asynchronous operation in normal mode
+         &R0     CTS follows RTS
+         &S1     DSR turned off while carrier is lost
+         \G0     Disable Xon/Xoff flow control
+
+         For v32bis (14,400 baud) models:
+
+         S37=11  Attempt to connect at 14400 bps
+
+
+    12.15.    Supra modems
+    ======================
+
+          Supra 14.4k fax modems need the ROM revision 1.70B or later but
+          their ROM revision number is odd.  Revision 1.8 or 1.4 are also
+          apparently OK.
+
+          Information providing features
+              Enable all CONNECT, PROTOCOL & COMPRESSION mesgs:   s95=41
+              loudspeaker control (low volume, on until carrier): l1m1
+
+          Modem/PC signals
+              modems disconnects when DTR drops:                  &d2
+              DCD follows line carrier:                           &c1
+              Enable hardware flow control:                       &k3
+
+          Speed connection, reject bad lines
+              new models, only make LAPM Reliable connections:    \n4
+              old models, make AutoReliable connections:          \n3
+              Disable negotiation, make V42 (LAPM) connection:    s48=0
+              connect at highest shared data rate:                n1
+
+          Compression
+              new models, V.42bis (BTLZ) Enabled, (but not MNP):  %C2
+              old models, enable data compression (BTLZ or MNP):  s41=1
+
+          An initialisation string for this would be:
+
+          ats95=41 l1m1&d2&c1&k3 \\n4 s48=0 n1 %C2
+                           ^note the double '\' is needed if typing this
+                           into some dialer programs
+
+          To put this into the modem's memory (NVRAM) type at&w
+
+
+
+
+    12.16.    Yoriko modems
+    =======================
+
+          Yorikos work OK with a simple AT&F&C1&D2 set-up.
+
+
+
+    12.17.    Zoltrix
+    =================
+
+         These are one of our user's settings for a Zoltrix v32bis
+         internal fax/modem.  He writes:
+
+         With X4, W1 and V1, I've managed to configure it very nicely to
+         redial if the line's are busy after only 5 seconds, report
+         CONNECT, PROTOCOL CARRIER, and BUSY
+
+         The only bit I'm vaguely unsure about is, whether disabling
+         compression (%c0 on mine), disables v42bis also, as I really
+         only want to knock out MNP 5. &Q9 I think attempts v42bis,
+         falls back to LAP-M+v42, then to normal.
+
+         An annoying feature is that at&v only digs out probably a
+         quarter of the settings - the '\' and '%' commands don't
+         feature; some of them appear extremely useful: %Q for instance
+         purportedly reports line signal quality, and %L received signal
+         level, which I reckon might be relevant to one recent spate of
+         postings, and you can tune up v42bis with others.
+
+         S86 stores a connection failure cause code.
+
+         OK
+         at&v
+         ACTIVE PROFILE:
+         B0 E1 L0 M0 N1 Q0 T V1 W1 X4 Y0 &C1 &D2 &G0 &J0 &K3 &Q9 &R0 &S1
+         &T4 &X0 &Y0
+         S00:000 S01:000 S02:043 S03:013 S04:010 S05:008 S06:002 S07:060
+         S08:002 S09:006
+         S10:014 S11:095 S12:050 S18:000 S25:005 S26:001 S36:007 S37:000
+         S38:020 S44:003
+         S46:138 S48:007 S49:008 S50:255
+
+         Another user writes:
+
+         Rom revision (use ATI0 or similar to check) : See below
+
+         AT&Q5S48=7S46=138S95=46
+
+         Rom revision
+         ------------
+
+         I have listed what comes out of ATI0 to ATI4 as ATI0
+         doesn't make sense!
+
+         ATI0 = 14400
+         ATI1 = 007
+         ATI2 = OK
+         ATI3 = V1.410-AP39
+         ATI4 = a007880284C6002F
+                bC60000000
+                r1005111151012004
+                r3000111170000000
+
+
+         Additional modem string info. (may be of some use)
+
+         &Q5    = set error correction mode
+                  causes the modes to try v42bis, then MNP5, then normal
+                  connection
+         S48=7     = enable V42 negotiation
+         S46=138   = error correction with compression
+         S95=46      = display extended result codes
+                  so I can see that i've got error correction
+                  and compression :-)
+
+
+         I also have a line
+
+         echo atz > com3:
+
+         in my demon.bat file to reset my modem as my fax software
+         leaves it in a bit of a state :-(  Two 'init' lines don't seem
+         to work (not that I'm bothered!)
+
+         Yet another user writes:
+
+         This might be helpful if anyone calls using a Zoltrix 28800/
+         Internal / Fax.
+
+         Setup straight from box, using a comms package.
+         Using factory settings, AT&F,
+         then alter s7 to = 20   ATS7=20
+         then alter b1 to b0     ATB0
+         then alter &q6 to &q5   AT&Q5
+         optional  ATL1 to ATL2  ATL2 - modem volume to hear connect.
+
+         and then write these to the stored profiles
+
+         AT&W0
+         AT&W1
+
+         Software used:
+
+         Windows 3.11 for workgroups
+         MS-Dos 6.22
+
+         DISWIN.EXE from Demon
+         DIS216C.EXE  "     "
+
+         Cybercom.drv - from ftp.qualcomm.com (can't rem exact loc)
+         to replace standard comm.drv, supports higher speed 57600+
+         rather than 19200
+
+         In windows system.ini under 386Enh
+
+         Com*fifo=1
+
+
+    12.18.    Zoom modems
+    =====================
+
+         From one user comes this:
+
+                        Zoom 14.4X FaxModem Settings
+                        ============================
+
+         These setting are in use to connect to demon both via KAQ9 and
+         trumpet winsock (SLIP). The settings enable 14400 bps with V42
+         error correction and V42bis data compression. In operation I
+         achieve 2600 cps when obtaining mainly text news. Whilst I am
+         sure the settings work I do not vouch for the accuracy of my
+         interpretation of what they mean!!
+
+         To reset modem to stored profile:-
+         ATZ      - sets to profile 0
+         ATZ0     - sets to profile 0
+         ATZ1     - sets to profile 0
+
+         To store current profile:-
+
+         AT&W0    - store as profile 0
+         AT&W1    - store as profile 1
+
+         For brevity I have left out setting that have no functional
+         relevence.
+
+
+         Profile     Command      comments
+         E1          ATE1         Command characters echoed
+         N0                       *ATN0 (zero)   Disable auto-mode
+                                   detection; connection speed specified
+                                   by register S37
+         Q0          ATQ0 (zero)  Enable response to computer (DTE)
+         X3                       *ATX3     Monitors busy tones; sends
+                                   X2 messages
+         Y0          ATY0 (zero)  Disable long space disconnect
+         &C0         AT&C0 (zero) Forces RLSD (DCD) on
+         &D0         AT&D0 (zero) Data terminal ready options
+         &G2         *AT&G2       Enable 1800Hz guard tone
+         &J0         *AT&J0 (zero)Disable adjusting DTE speed
+         &K3                      AT&K3     Enable RTS/CTS flow
+                                   control. VITAL for slip connections
+                                   such as Trumpet winsock
+         &R1                      AT&R1     CTS is always on in
+                                   synchronous or drops if required by
+                                   flow control in asynchronous
+         &S1*                     AT&S1     DSR active after answer
+                                   tone detected and inactive after
+                                   carrier loss.
+         &T4                      AT&T4     Responds to remote modem
+                                   request for digital loopback.
+
+         Registers
+         Set using ATSn=v  Sets register n to value v
+
+         S37 11 *
+
+         All lines with an * are for items than are altered fron the
+         factory default settings.
+
+         We would recommend &d2 otherwise your modem may not hang up the
+         line when you have finished your call.
+
+         From yet another user: The best I've got so far for the Zoom
+         14.4X is AT&F0W0&C1&D2%C2
+
+         &F0 (manufacturer's defaults, so we know where we are)
+         W0 (limit the messages coming from the modem)
+         (W1 gives lots of messages from the modem but causes problems
+         for some people)
+         &C1&D2 (for hardware flow control)
+         %C2 (enable V42 bis but not MNP5)
+
+
+
+    12.19.    Zyxel
+    ===============
+
+         From one of our users again:
+
+         The following "dial_cmd" is for a Zyxel U-1496E+ modem
+
+         "ATL2N1X7&G2*E1DT"
+         L2 --- sets a low (but not inaudible) speaker volume
+         N1 --- sets a low (but not inaudible) ringing volume
+         X7 --- sets result code options so that the "connect" message
+         is, for example, "CONNECT 14400/Arq/V42b"
+         &G2 -- enables 1800 Hz guard tone
+         *E1 -- terminate call if error control negotiation fails, ie.
+         insist on error-control or end call
+         DT --- dial using DTMF tones
+
+
+
+13.  Testing
+===========
+
+          To test out your setup you could try using ping.  ping
+          gate.demon.co.uk whilst logged on directly to gate should
+          return a speed of about 270ms on a fast link down to 1000ms on
+          a slow link.
+
+          Try using ftp to ftp.demon.co.uk and downloading files from
+          /pub/test.  There are files of varying contents that have also
+          been compressed in various ways.  "empty" files are there so
+          that you can test the maximum throughput on blank data.  "full"
+          files contain a thorough mix of characters and so little
+          compression by your modem will be possible. "regular" files are
+          a mixture - just like this document or a Usenet news message.
+          Each of these three have been compressed using popular methods
+          and so you can try working on the compressed files as well if
+          you like.  Try uploading these files to
+          ftp.demon.co.uk:/incoming to test the link in that direction as
+          well.
+
+          Using a V.32bis modem, the maximum throughput you are likely to
+          get on a binary file is 1,600 cps.  On an ASCII file the
+          maximum is about 2,800 cps.
+
+
+
+14.  Finally
+============
+
+          Please try to sort out your setup by following the above
+          advice.  If you are still stuck then telephone the support line
+          on 0181-371 1010 during support hours to see if further help
+          can be offered.  Full support line details are available in
+          /pub/doc/Welcome.txt.
