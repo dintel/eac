@@ -12,8 +12,9 @@ for WS in $WINDOW_SIZES; do
             continue;
         fi
         for FILE in $FILES; do
-            echo $FILE LZ77 `./perf_single.sh $FILE $BS $WS` >> $CSV_FILE
-            echo $FILE EAC `./perf_single.sh $FILE $BS $WS -e` >> $CSV_FILE
+            echo $FILE LZ77 `./perf_single.sh $FILE $BS $WS` >> $CSV_FILE &
+            echo $FILE EAC `./perf_single.sh $FILE $BS $WS -e` >> $CSV_FILE &
+            wait
         done
     done
 done
