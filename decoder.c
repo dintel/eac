@@ -236,5 +236,7 @@ int main(int argc, char *argv[])
     decompressed_size += bit_string_writer_flush(writer);
     printf("File size %ld decompressed file size %ld (ratio %f)\n",file_size,decompressed_size, (double)decompressed_size / file_size);
     
+    fclose(file);
+    fclose(outfile);
     return EXIT_SUCCESS;
 }

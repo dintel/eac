@@ -37,6 +37,8 @@ bit_string_t *bit_string_init(size_t size)
 
 void bit_string_destroy(bit_string_t *bs)
 {
+    if(bs == NULL)
+        return;
     free(bs->data);
     free(bs);
 }
@@ -58,7 +60,7 @@ int bit_string_sub_cmp(bit_string_t *bs1,bit_string_t *bs2,size_t offset1, size_
 size_t bit_string_count_zeroes(bit_string_t *bs, size_t offset)
 {
     size_t i = 0;
-    while(bit_string_get_bit(bs,offset + i) == 0 && i < bs->offset) ++i;
+    while(bit_string_get_bit(bs,offset + i) == 0 && offset + i < bs->offset) ++i;
     return i;
 }
 

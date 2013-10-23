@@ -28,6 +28,8 @@ uint32_t e_inv(bit_string_t *bs, size_t *offset)
     uint32_t k = 0;
     uint32_t tmp;
     size_t len = bit_string_count_zeroes(bs,*offset) + 1;
+    if(len + *offset >= bs->offset)
+        return 0;
     PRINT_DEBUG("e_inv offset %zu len %zu\n",*offset,len);
     *offset += len;
     for(int i = 0; i < len; ++i) {

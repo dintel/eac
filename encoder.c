@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <argp.h>
+#include <unistd.h>
 #include "bit_string.h"
 #include "bit_string_writer.h"
 #include "lz77.h"
@@ -241,9 +242,19 @@ int main(int argc, char *argv[])
         }
     }
     bit_string_destroy(window);
+    
+    if(compressed_size == 0) {
+        fclose(file);
+        fclose(outfile);
+        unlink(arguments.output_file);
+        printf("File too small to be compressed\n");
+        return EXIT_FAILURE;
+    }
 
     compressed_size += bit_string_writer_flush(writer);
     printf("%ld %ld %f\n",file_size,compressed_size, (double)file_size / compressed_size);
     
+    fclose(file);
+    fclose(outfile);
     return EXIT_SUCCESS;
 }
