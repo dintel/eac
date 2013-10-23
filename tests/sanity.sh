@@ -3,7 +3,7 @@
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
-for FILE in `ls files`; do
+for FILE in `find files/ -size -10M -type f -printf '%f\n'`; do
     ../eac_encode -i files/$FILE -o test.lz77 $1 > /dev/null &
     ../eac_encode -i files/$FILE -o test.eac -e $1 > /dev/null &
     wait
