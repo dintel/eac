@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
     }
 
     compressed_size += bit_string_writer_flush(writer);
-    printf("%ld %ld %f\n",file_size,compressed_size, (double)file_size / compressed_size);
+    printf("%ld;%ld;%f\n",file_size,compressed_size, (double)file_size / compressed_size);
     
     fclose(file);
     fclose(outfile);

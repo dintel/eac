@@ -5,19 +5,27 @@ BS=$2
 WS=$3
 EAC=$4
 
-$OUTPUT=`/usr/bin/time -f "%e" -o encode.time ../eac_encode -i $FILE -o test.comp -b $BS -w $WS $EAC`
-/usr/bin/time -f "%e" -o decode.time ../eac_decode -i test.comp -o test > /dev/null
-diff -q test files/$FILE
+EXTENSION="lz77"
+if [[ $EAC == "-e" ]]; then
+    EXTENSION="eac"
+fi
+
+FILENAME=`basename $FILE`-$BS-$WS.$EXTENSION
+
+OUTPUT=`/usr/bin/time -f "%e" -o $FILENAME.encode.time ../eac_encode -i $FILE -o $FILENAME -b $BS -n $WS $EAC`
+/usr/bin/time -f "%e" -o $FILENAME.decode.time ../eac_decode -i $FILENAME -o $FILENAME.orig > /dev/null
+diff -q $FILENAME.orig $FILE > /dev/null
 if [[ $? == 0 ]]; then
     OUTPUT="$OUTPUT SUCCESS"
 else
     OUTPUT="$OUTPUT FAILED"
 fi
 
-ENCODE_TIME=`cat encode.time`
-DECODE_TIME=`cat decode.time`
-OUTPUT="$ENCODE_TIME $DECODE_TIME $OUTPUT"
+ENCODE_TIME=`cat $FILENAME.encode.time`
+DECODE_TIME=`cat $FILENAME.decode.time`
+TMP=`basename $FILE`
+OUTPUT="$TMP;$BS;$WS;$EXTENSION;$ENCODE_TIME;$DECODE_TIME;$OUTPUT"
 
-rm -f test.comp test test.log encode.time decode.time
+rm -f $FILENAME.encode.time $FILENAME.decode.time $FILENAME $FILENAME.orig
 
-echo $OUTPUT
+echo $OUTPUT > results/$FILENAME.result
