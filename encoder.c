@@ -72,7 +72,7 @@ static error_t enc_parse_opt(int key, char *arg, struct argp_state *state)
         arguments->output_file = arg;
         break;
     case 'n':
-        arguments->window_size = atoi(arg);
+        arguments->window_size = atoi(arg) * 8;
         break;
     case 'e':
         arguments->eac = 1;
@@ -153,14 +153,14 @@ int main(int argc, char *argv[])
     arguments.input_file = 0;
     arguments.output_file = 0;
     arguments.window_size = DEFAULT_WINDOW_SIZE;
-     
+    
     /* Parse our arguments; every option seen by enc_parse_opt will
        be reflected in arguments. */
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
     log_verbose = arguments.verbose;
     log_debug = arguments.debug;
     
-    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nWINDOW_SIZE = %zu\nBLOCK_SIZE = %d\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
+    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nWINDOW_SIZE = %zu bits\nBLOCK_SIZE = %d bytes\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
                 arguments.input_file,
                 arguments.output_file,
                 arguments.window_size,

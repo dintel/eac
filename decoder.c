@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
     log_verbose = arguments.verbose;
     log_debug = arguments.debug;
      
-    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nBLOCK_SIZE = %d\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
+    PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nBLOCK_SIZE = %d bytes\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
                 arguments.input_file,
                 arguments.output_file,
                 arguments.block_size,
