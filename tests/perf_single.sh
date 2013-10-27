@@ -16,13 +16,13 @@ OUTPUT=`/usr/bin/time -f "%e" -o $FILENAME.encode.time ../eac_encode -i $FILE -o
 /usr/bin/time -f "%e" -o $FILENAME.decode.time ../eac_decode -i $FILENAME -o $FILENAME.orig > /dev/null
 diff -q $FILENAME.orig $FILE > /dev/null
 if [[ $? == 0 ]]; then
-    OUTPUT="$OUTPUT SUCCESS"
+    OUTPUT="SUCCESS;$OUTPUT"
 else
-    OUTPUT="$OUTPUT FAILED"
+    OUTPUT="FAILED;$OUTPUT"
 fi
 
-ENCODE_TIME=`cat $FILENAME.encode.time`
-DECODE_TIME=`cat $FILENAME.decode.time`
+ENCODE_TIME=`tail -1 $FILENAME.encode.time`
+DECODE_TIME=`tail -1 $FILENAME.decode.time`
 TMP=`basename $FILE`
 OUTPUT="$TMP;$BS;$WS;$EXTENSION;$ENCODE_TIME;$DECODE_TIME;$OUTPUT"
 
