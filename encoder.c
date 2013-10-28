@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
             prev_nw = best_nw;
             best_string = 0;
             best_nw = 0;
-            for(int i = 2; i <= INITIAL_NW; i *= 2 ) {
+            for(int i = 2; i <= INITIAL_NW && i * 8 <= arguments.block_size; i *= 2 ) {
                 tmp_string = lz77_encode(buffer_string,i,window);
                 PRINT_DEBUG("Window size %d ratio %f\n",i,(float)tmp_string->offset / buffer_string->offset);
                 if(best_string == 0) {
