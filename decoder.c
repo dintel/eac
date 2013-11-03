@@ -110,7 +110,7 @@ bit_string_t *convert(uint8_t *src, size_t size)
     for(int i = 0; i < size; ++i) {
         for(int j = 7; j >= 0; --j) {
             bit_string_append_bit(result, src[i] >> j & 1);
-            PRINT_DEBUG("read bit %x (%x)\n",src[i] >> j & 1,result->data[result->offset / 8 - 1]);
+            //PRINT_DEBUG("read bit %x (%x)\n",src[i] >> j & 1,result->data[result->offset / 8 - 1]);
         }
     }
     return result;
@@ -188,10 +188,7 @@ int main(int argc, char *argv[])
         PRINT_VERBOSE("Decoded block %d encoded size %zu decoded size %zu\n",i++,enc_size,tmp->offset);
         if(window != NULL)
             bit_string_destroy(window);
-        if(tmp->offset > MAX_NW) 
-            window = bit_string_substr(tmp,tmp->offset - MAX_NW,MAX_NW);
-        else
-            window = bit_string_substr(tmp,0,tmp->offset - 1);
+        window = bit_string_substr(tmp,0,tmp->offset);
         bit_string_writer_write(writer,tmp);
         bit_string_destroy(tmp);
         if(bs->offset >= (enc_size + NW_DELTA_BITS) && arguments.eac) {
@@ -214,10 +211,7 @@ int main(int argc, char *argv[])
         PRINT_VERBOSE("Decoded block %d encoded size %zu decoded size %zu\n",i++,enc_size,tmp->offset);
         if(window != NULL)
             bit_string_destroy(window);
-        if(tmp->offset >= MAX_NW) 
-            window = bit_string_substr(tmp,tmp->offset - MAX_NW,MAX_NW);
-        else
-            window = bit_string_substr(tmp,0,tmp->offset - 1);
+        window = bit_string_substr(tmp,0,tmp->offset);
         bit_string_writer_write(writer,tmp);
         bit_string_destroy(tmp);
         if(arguments.eac) {
@@ -232,10 +226,15 @@ int main(int argc, char *argv[])
         bit_string_destroy(bs);
         bs = tmp;
     }
+
+    bit_string_destroy(bs);
+    bit_string_destroy(window);
     
     decompressed_size += bit_string_writer_flush(writer);
+    bit_string_writer_destroy(writer);
     printf("%ld;%ld;%f\n",file_size,decompressed_size, (double)decompressed_size / file_size);
     
+    free(buffer);
     fclose(file);
     fclose(outfile);
     return EXIT_SUCCESS;

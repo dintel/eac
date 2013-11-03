@@ -1,7 +1,7 @@
 CC = gcc
 
 CFLAGS = -Wall			 	\
-	 -O0			 	\
+	 -O3			 	\
 	 -std=c99			\
 	 -pedantic-errors		\
 	 -g				\
@@ -10,7 +10,7 @@ CFLAGS = -Wall			 	\
 
 COFLAGS = -c				\
 	  -Wall			 	\
-	  -O0			 	\
+	  -O3			 	\
 	  -std=c99			\
 	  -pedantic-errors		\
 	  -g				\

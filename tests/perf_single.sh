@@ -13,7 +13,7 @@ fi
 FILENAME=`basename $FILE`-$BS-$WS.$EXTENSION
 
 OUTPUT=`/usr/bin/time -f "%e" -o $FILENAME.encode.time ../eac_encode -i $FILE -o $FILENAME -b $BS -n $WS $EAC`
-/usr/bin/time -f "%e" -o $FILENAME.decode.time ../eac_decode -i $FILENAME -o $FILENAME.orig > /dev/null
+/usr/bin/time -f "%e" -o $FILENAME.decode.time ../eac_decode -i $FILENAME -o $FILENAME.orig -b $BS $EAC > /dev/null
 diff -q $FILENAME.orig $FILE > /dev/null
 if [[ $? == 0 ]]; then
     OUTPUT="SUCCESS;$OUTPUT"

@@ -17,7 +17,7 @@ bit_string_t *lz77_encode(bit_string_t *src, size_t nw, bit_string_t *window)
         //DEBUG_PRINT("lz77_encode start nw = %zu lognw = %zu offset = %zu first = %zu src->offset %zu\n",nw,lognw,offset,first,src->offset);
     } else {
         /* This is not a first block, so the window was passed to this
-         * function. Decode next block using that window as initial window. We
+         * function. Encode next block using that window as initial window. We
          * do it simply by adding window in front of source bitstring. */
         bit_string_t *tmp = bit_string_init(src->size + window->size);
         bit_string_concat(tmp,window);
@@ -97,10 +97,14 @@ bit_string_t *lz77_decode(bit_string_t *src, size_t size, size_t *enc_size, bit_
     PRINT_DEBUG("lz77_decode nw %zu lognw %zu\n",nw,lognw);
 
     if(window == NULL) {
+        /* Window is null, therefore this is first block. Copy first nw bits as
+         * is to result. */
         for(int i = 0; i < nw; ++i) {
             bit_string_append_bit(result,bit_string_get_bit(src,offset++));
         }
     } else {
+        /* Window was passed. Copy it as is to result to be able to decode
+         * everything properly. After decoding first window bits should be cut. */
         for(int i = 0; i < window->offset; ++i) {
             bit_string_append_bit(result,bit_string_get_bit(window,i));
         }
@@ -134,6 +138,7 @@ bit_string_t *lz77_decode(bit_string_t *src, size_t size, size_t *enc_size, bit_
     *enc_size = offset;
 
     if(window != NULL) {
+        /* Window is not null, so strip first window size bits of result. */
         bit_string_t *tmp = bit_string_substr(result,window->offset,result->offset - window->offset);
         bit_string_destroy(result);
         result = tmp;

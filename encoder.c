@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
             prev_nw = best_nw;
             best_string = 0;
             best_nw = 0;
-            for(int i = 2; i <= INITIAL_NW && i * 8 <= arguments.block_size; i *= 2 ) {
+            for(int i = 2; i <= INITIAL_NW && i <= arguments.block_size * 8; i *= 2 ) {
                 tmp_string = lz77_encode(buffer_string,i,window);
                 PRINT_DEBUG("Window size %d ratio %f\n",i,(float)tmp_string->offset / buffer_string->offset);
                 if(best_string == 0) {
@@ -253,7 +253,10 @@ int main(int argc, char *argv[])
 
     compressed_size += bit_string_writer_flush(writer);
     printf("%ld;%ld;%f\n",file_size,compressed_size, (double)file_size / compressed_size);
+
+    bit_string_writer_destroy(writer);
     
+    free(buffer);
     fclose(file);
     fclose(outfile);
     return EXIT_SUCCESS;
