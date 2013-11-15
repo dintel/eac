@@ -8,12 +8,15 @@
 #include "bit_string_writer.h"
 #include "lz77.h"
 #include "log.h"
+#include "queue.h"
+#include "block.h"
 
 #define DEFAULT_BLOCK_SIZE 8192
 #define DEFAULT_WINDOW_SIZE 32768
 #define INITIAL_NW 32768
 #define MAX_NW_DELTA 15
 #define NW_DELTA_BITS 5
+#define DEFAULT_THREADS 8
 
 /** Encoder version */
 const char *argp_program_version = "eac_encode 0.1";
@@ -35,6 +38,7 @@ static struct argp_option options[] = {
     {"input",       'i', "FILE",       0,                    "Input file" },
     {"output",      'o', "FILE",       0,                    "Output file" },
     {"block-size",  'b', "BLOCK_SIZE", 0,                    "Block size"},
+    {"threads",     't', "THREADS",    0,                    "Number of concurrent threads"},
     { 0 }
 };
      
@@ -47,6 +51,7 @@ struct enc_arguments {
     size_t window_size;         /**< window size parameter */
     char *input_file;           /**< input file parameter */
     char *output_file;          /**< output file parameter */
+    int threads;                /**< number of threads */
 };
      
 /** Parse a single option of encoder */
@@ -79,6 +84,9 @@ static error_t enc_parse_opt(int key, char *arg, struct argp_state *state)
         break;
     case 'b':
         arguments->block_size = atoi(arg);
+        break;
+    case 't':
+        arguments->threads = atoi(arg);
         break;
      
     case ARGP_KEY_ARG:
@@ -153,6 +161,7 @@ int main(int argc, char *argv[])
     arguments.input_file = 0;
     arguments.output_file = 0;
     arguments.window_size = DEFAULT_WINDOW_SIZE;
+    arguments.threads = DEFAULT_THREADS;
     
     /* Parse our arguments; every option seen by enc_parse_opt will
        be reflected in arguments. */
@@ -179,70 +188,74 @@ int main(int argc, char *argv[])
         error(1, errno, "Could not open output file");
     }
     
-    uint8_t *buffer = malloc(sizeof(uint8_t) * arguments.block_size);
-    int i = 1;
-    int prev_nw = 0,best_nw = -1;
-    bit_string_t *buffer_string, *tmp_string, *best_string, *window = NULL;
+    uint8_t *buffer;
+    bit_string_t *buffer_string;
     int buffer_size;
     long file_size = 0, compressed_size = 0;
     bit_string_writer_t *writer = bit_string_writer_init(outfile);
-    while(!feof(file)) {
-        buffer_size = fread(buffer,sizeof(uint8_t),arguments.block_size,file);
-        if(buffer_size == 0) {
-            continue;
-        }
-        PRINT_VERBOSE("Encoding block %d size %d bits\n",i++,buffer_size * 8);
-        buffer_string = convert(buffer,buffer_size);
-        if(arguments.eac) {
-            prev_nw = best_nw;
-            best_string = 0;
-            best_nw = 0;
+
+    if(arguments.eac) {
+        queue_t *queue = queue_init();
+        block_t *first = NULL;
+        block_t *block;
+        block_t *prev_block = NULL;
+        int num = 0;
+
+        buffer = malloc(sizeof(uint8_t) * arguments.block_size);
+        
+        while(!feof(file)) {
+            buffer_size = fread(buffer,sizeof(uint8_t),arguments.block_size,file);
+            if(buffer_size == 0) {
+                continue;
+            }
+            buffer_string = convert(buffer,buffer_size);
+            block = block_init(buffer_string,prev_block,num++);
+            if(first == NULL)
+                first = block;
             for(int i = 2; i <= INITIAL_NW && i <= arguments.block_size * 8; i *= 2 ) {
-                tmp_string = lz77_encode(buffer_string,i,window);
-                PRINT_DEBUG("Window size %d ratio %f\n",i,(float)tmp_string->offset / buffer_string->offset);
-                if(best_string == 0) {
-                    best_string = tmp_string;
-                    best_nw = i;
-                } else if(tmp_string->offset < best_string->offset) {
-                    bit_string_destroy(best_string);
-                    best_string = tmp_string;
-                    best_nw = i;
-                } else {
-                    bit_string_destroy(tmp_string);
-                }
+                queue_add_job(queue,block,i);
             }
-            PRINT_VERBOSE("Best window size %d compressed size %zu ratio %f\n", best_nw, best_string->offset, (float)buffer_string->offset / best_string->offset);
-            if(prev_nw != -1)
-                bit_string_writer_write_byte(writer,delta_nw(prev_nw,best_nw),NW_DELTA_BITS);
-            if(window != NULL)
-                bit_string_destroy(window);
-            if(buffer_string->offset >= INITIAL_NW)
-                window = bit_string_substr(buffer_string,buffer_string->offset - INITIAL_NW,INITIAL_NW);
-            else
-                window = bit_string_substr(buffer_string,0,buffer_string->offset);
-            compressed_size += best_string->offset;
-            file_size += buffer_string->offset;
-            bit_string_writer_write(writer,best_string);
-            bit_string_destroy(best_string);
-            bit_string_destroy(buffer_string);
-        } else {
-            best_string = lz77_encode(buffer_string,arguments.window_size,window);
-            PRINT_VERBOSE("Compressed using window size %zu compressed size %zu ratio %f\n", arguments.window_size, best_string->offset, (float)buffer_string->offset / best_string->offset);
-            compressed_size += best_string->offset;
-            file_size += buffer_string->offset;
-            bit_string_writer_write(writer,best_string);
-            if(window) {
-                bit_string_destroy(window);
-            }
-            if(buffer_string->offset >= arguments.window_size)
-                window = bit_string_substr(buffer_string,buffer_string->offset - arguments.window_size,arguments.window_size);
-            else
-                window = bit_string_substr(buffer_string,0,buffer_string->offset);
-            bit_string_destroy(best_string);
+            prev_block = block;
         }
+        queue_run(queue,arguments.threads);
+        block = first;
+        while(block != NULL) {
+            if(block->prev_block != NULL) {
+                int delta = delta_nw(block->prev_block->best_window_size,block->best_window_size);
+                bit_string_writer_write_byte(writer,delta,NW_DELTA_BITS);
+                compressed_size += NW_DELTA_BITS;
+            }
+            PRINT_VERBOSE("Block %d - best window size %zu compressed size %zu ratio %f\n", block->num_block, block->best_window_size, block->result->offset, (float)block->block->offset / block->result->offset);
+            bit_string_writer_write(writer,block->result);
+            file_size += block->block->offset;
+            compressed_size += block->result->offset;
+            block = block->next_block;
+        }
+        block = first;
+        while(block != NULL) {
+            block_t *tmp = block->next_block;
+            block_destroy(block);
+            block = tmp;
+        }
+        queue_destroy(queue);
+        free(buffer);
+    } else {
+        bit_string_t *lz77_string;
+        fseek(file,0L,SEEK_END);
+        file_size = ftell(file);
+        fseek(file,0L,SEEK_SET);
+        buffer = malloc(sizeof(uint8_t) * file_size);
+        buffer_size = fread(buffer,sizeof(uint8_t),file_size,file);
+        buffer_string = convert(buffer,buffer_size);
+        lz77_string = lz77_encode(buffer_string,arguments.window_size,NULL);
+        PRINT_VERBOSE("Compressed using window size %zu compressed size %zu ratio %f\n", arguments.window_size, lz77_string->offset, (float)buffer_string->offset / lz77_string->offset);
+        compressed_size += lz77_string->offset;
+        file_size = buffer_string->offset;
+        bit_string_writer_write(writer,lz77_string);
+        bit_string_destroy(lz77_string);
+        free(buffer);
     }
-    bit_string_destroy(window);
-    
+
     if(compressed_size == 0) {
         fclose(file);
         fclose(outfile);
@@ -255,8 +268,7 @@ int main(int argc, char *argv[])
     printf("%ld;%ld;%f\n",file_size,compressed_size, (double)file_size / compressed_size);
 
     bit_string_writer_destroy(writer);
-    
-    free(buffer);
+
     fclose(file);
     fclose(outfile);
     return EXIT_SUCCESS;

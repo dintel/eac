@@ -6,6 +6,7 @@ CFLAGS = -Wall			 	\
 	 -pedantic-errors		\
 	 -g				\
 	 -DDEBUG			\
+         -pthread                       \
 	 -lm
 
 COFLAGS = -c				\
@@ -14,11 +15,12 @@ COFLAGS = -c				\
 	  -std=c99			\
 	  -pedantic-errors		\
 	  -g				\
+          -pthread                      \
 	  -DDEBUG
 
 ENCODER = eac_encode
 DECODER = eac_decode
-ENCODER_OBJECTS = encoder.o lz77.o cfc.o bit_string.o bit_string_writer.o log.o
+ENCODER_OBJECTS = encoder.o lz77.o cfc.o bit_string.o bit_string_writer.o log.o queue.o block.o
 DECODER_OBJECTS = decoder.o lz77.o cfc.o bit_string.o bit_string_writer.o log.o
 
 .PHONY: all
