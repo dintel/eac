@@ -238,7 +238,6 @@ int main(int argc, char *argv[])
             block = tmp;
         }
         queue_destroy(queue);
-        free(buffer);
     } else {
         bit_string_t *lz77_string;
         fseek(file,0L,SEEK_END);
@@ -253,8 +252,8 @@ int main(int argc, char *argv[])
         file_size = buffer_string->offset;
         bit_string_writer_write(writer,lz77_string);
         bit_string_destroy(lz77_string);
-        free(buffer);
     }
+    free(buffer);
 
     if(compressed_size == 0) {
         fclose(file);
