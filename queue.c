@@ -16,6 +16,12 @@ queue_t *queue_init()
 
 void queue_destroy(queue_t *q)
 {
+    job_t *tmp, *job = q->first;
+    while(job != NULL) {
+        tmp = job->next;
+        free(job);
+        job = tmp;
+    }
     pthread_mutex_destroy(&q->mutex);
     pthread_mutex_destroy(&q->cv_mutex);
     pthread_cond_destroy(&q->cv);
