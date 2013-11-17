@@ -39,6 +39,7 @@ job_t *queue_run_job(queue_t *q)
     if(job != NULL) {
         job->status = JOB_STATUS_RUNNING;
         result = pthread_create(&job->thread,NULL,queue_job_thread_encode,(void *)job);
+        pthread_detach(job->thread);
         if(result != 0) {
             printf("Failed spawning thread!\n");
             exit(EXIT_FAILURE);

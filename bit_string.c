@@ -53,7 +53,7 @@ int bit_string_cmp(bit_string_t *bs1,bit_string_t *bs2)
 int bit_string_sub_cmp(bit_string_t *bs1,bit_string_t *bs2,size_t offset1, size_t offset2)
 {
     int i = 0;
-    while(bit_string_get_bit(bs1,offset1+i) == bit_string_get_bit(bs2,offset2+i) && offset1+i < bs1->offset && offset2+i < bs2->offset) ++i;
+    while(offset1+i < bs1->offset && offset2+i < bs2->offset && bit_string_get_bit(bs1,offset1+i) == bit_string_get_bit(bs2,offset2+i)) ++i;
     return i;
 }
 
@@ -73,6 +73,8 @@ void bit_string_append_bit(bit_string_t *bs,uint8_t bit)
 
 uint8_t bit_string_get_bit(bit_string_t *bs,size_t index)
 {
+    if(index/8 == bs->size)
+        printf("%zu %zu %zu\n",bs->size,index,bs->offset);
     uint8_t byte = bs->data[index/8];
     if(index >= bs->offset - bs->offset % 8 && index <= bs->offset) {
         return (byte >> ((bs->offset % 8) - index % 8 - 1)) & 1; 
