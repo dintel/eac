@@ -12,6 +12,7 @@
 #define MAX_NW 32768
 #define MAX_NW_DELTA 15
 #define NW_DELTA_BITS 5
+#define MAX_RATIO 400
 
 /** Decoder version  */
 const char *argp_program_version = "eac_decode 0.1";
@@ -150,7 +151,7 @@ int main(int argc, char *argv[])
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
     log_verbose = arguments.verbose;
     log_debug = arguments.debug;
-     
+
     PRINT_DEBUG("INPUT_FILE = %s\nOUTPUT_FILE = %s\nBLOCK_SIZE = %d bytes\nEAC = %s\nVERBOSE = %s\nDEBUG = %s\n",
                 arguments.input_file,
                 arguments.output_file,
@@ -169,66 +170,65 @@ int main(int argc, char *argv[])
         error(1, errno, "Could not open output file");
     }
     
-    uint8_t *buffer = malloc(sizeof(uint8_t) * arguments.block_size * 8);
-    bit_string_t *bs = bit_string_init(arguments.block_size * 8), *tmp, *window = NULL;
-    long file_size = 0, decompressed_size = 0;
+    uint8_t *buffer;
+    bit_string_t *bs, *tmp, *window = NULL;
     bit_string_writer_t *writer = bit_string_writer_init(outfile);
+    long file_size = 0, decompressed_size = 0;
     size_t enc_size, buffer_size, window_size;
     int i = 1;
     uint8_t byte;
-    while(!feof(file)) {
-        buffer_size = fread(buffer,sizeof(uint8_t),arguments.block_size * 8 - bs->offset / 8 - 1,file);
-        if(buffer_size) {
-            file_size += buffer_size * 8;
-            tmp = convert(buffer,buffer_size);
-            bit_string_concat_and_destroy(bs,tmp);
-        }
-        tmp = lz77_decode(bs,arguments.block_size * 8,&enc_size,window,&window_size);
-        decompressed_size += tmp->offset;
-        PRINT_VERBOSE("Decoded block %d encoded size %zu decoded size %zu\n",i++,enc_size,tmp->offset);
-        if(window != NULL)
-            bit_string_destroy(window);
-        window = bit_string_substr(tmp,0,tmp->offset);
-        bit_string_writer_write(writer,tmp);
-        bit_string_destroy(tmp);
-        if(bs->offset >= (enc_size + NW_DELTA_BITS) && arguments.eac) {
-            byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
-            window_size = delta_nw_inv(window_size,byte);
-            enc_size += NW_DELTA_BITS;
-        }
-        tmp = bit_string_substr(bs,enc_size,bs->offset - enc_size);
-        bit_string_destroy(bs);
-        bs = tmp;
-    }
-    
-    while(bs->offset >= 8) {
-        tmp = lz77_decode(bs,arguments.block_size * 8,&enc_size,window,&window_size);
-        if(tmp == NULL) {
-            bit_string_destroy(bs);
-            break;
-        }
-        decompressed_size += tmp->offset;
-        PRINT_VERBOSE("Decoded block %d encoded size %zu decoded size %zu\n",i++,enc_size,tmp->offset);
-        if(window != NULL)
-            bit_string_destroy(window);
-        window = bit_string_substr(tmp,0,tmp->offset);
-        bit_string_writer_write(writer,tmp);
-        bit_string_destroy(tmp);
-        if(arguments.eac) {
-            byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
-            window_size = delta_nw_inv(window_size,byte);
-            enc_size += NW_DELTA_BITS;
-        }
-        if(bs->offset < enc_size)
-            tmp = bit_string_substr(bs,enc_size,0);
-        else
-            tmp = bit_string_substr(bs,enc_size,bs->offset - enc_size);
-        bit_string_destroy(bs);
-        bs = tmp;
-    }
 
-    bit_string_destroy(bs);
-    bit_string_destroy(window);
+    if(arguments.eac) {
+        bs = bit_string_init(arguments.block_size * 8);
+        buffer = malloc(sizeof(uint8_t) * arguments.block_size * 8);
+
+        while(!feof(file) || bs->offset >= 8) {
+            buffer_size = fread(buffer,sizeof(uint8_t),arguments.block_size * 8 - bs->offset / 8 - 1,file);
+            if(buffer_size) {
+                file_size += buffer_size * 8;
+                tmp = convert(buffer,buffer_size);
+                bit_string_concat_and_destroy(bs,tmp);
+            }
+            tmp = lz77_decode(bs,arguments.block_size * 8,&enc_size,window,&window_size);
+            if(tmp == NULL) {
+                bit_string_destroy(bs);
+                break;
+            }
+            decompressed_size += tmp->offset;
+            PRINT_VERBOSE("Decoded block %d encoded size %zu decoded size %zu\n",i++,enc_size,tmp->offset);
+            if(window != NULL)
+                bit_string_destroy(window);
+            window = bit_string_substr(tmp,0,tmp->offset);
+            bit_string_writer_write(writer,tmp);
+            bit_string_destroy(tmp);
+            if(bs->offset >= (enc_size + NW_DELTA_BITS) && arguments.eac) {
+                byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
+                window_size = delta_nw_inv(window_size,byte);
+                enc_size += NW_DELTA_BITS;
+            }
+            if(bs->offset < enc_size)
+                tmp = bit_string_substr(bs,enc_size,0);
+            else
+                tmp = bit_string_substr(bs,enc_size,bs->offset - enc_size);
+            bit_string_destroy(bs);
+            bs = tmp;
+        }
+        bit_string_destroy(window);
+        bit_string_destroy(bs);
+    } else {
+        fseek(file,0L,SEEK_END);
+        file_size = ftell(file);
+        fseek(file,0L,SEEK_SET);
+        buffer = malloc(sizeof(uint8_t) * file_size);
+        buffer_size = fread(buffer,sizeof(uint8_t),file_size,file);
+        bs = convert(buffer,buffer_size);
+        tmp = lz77_decode(bs,file_size * MAX_RATIO,&enc_size,NULL,&window_size);
+        decompressed_size = tmp->offset;
+        file_size *= 8;
+        bit_string_writer_write(writer,tmp);
+        bit_string_destroy(tmp);
+        bit_string_destroy(bs);
+    }
     
     decompressed_size += bit_string_writer_flush(writer);
     bit_string_writer_destroy(writer);
