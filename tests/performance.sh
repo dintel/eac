@@ -10,19 +10,18 @@ for FILE in $FILES; do
     FILE_SIZE=`du -sb $FILE | cut -f1`
     for BS in $BLOCK_SIZES; do
         if [[ $FILE_SIZE -ge $BS ]]; then
-            for WS in $WINDOW_SIZES; do
-                if [[ $BS -ge $WS ]]; then
-                    ./perf_single.sh $FILE $BS $WS &
-                fi
-            done
             ./perf_single.sh $FILE $BS 0 -e &
+        fi
+    done
+    for WS in $WINDOW_SIZES; do
+        if [[ $FILE_SIZE -ge $WS ]]; then
+            ./perf_single.sh $FILE 0 $WS &
         fi
     done
     wait
 done
 
 wait
-
 
 RESULT_FILE=result.csv
 if [[ -s $RESULT_FILE ]]; then
