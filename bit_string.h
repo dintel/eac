@@ -160,5 +160,15 @@ uint8_t bit_string_read_byte(bit_string_t *bs, int offset, size_t limit);
  */
 void bit_string_print(bit_string_t *bs,int bytes_in_row);
 
+/**
+ * \brief Copy bit string into another bit string
+ *
+ * Copies bit string into another existing bit string. Target bit string must be
+ * large enough to hold source bit string.
+ * \param src source bit string
+ * \param dst destination bit string
+ */
+void bit_string_full_copy(bit_string_t *src, bit_string_t *dst);
+
 /** @} */
 #endif

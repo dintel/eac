@@ -122,3 +122,14 @@ uint8_t bit_string_read_byte(bit_string_t *bs, int offset, size_t limit)
     }
     return result;
 }
+
+void bit_string_full_copy(bit_string_t *src, bit_string_t *dst)
+{
+    for(int i = 0; i < src->size; i++) {
+        dst->data[i] = src->data[i];
+    }
+    for(int i = src->size; i < dst->size; i++) {
+        dst->data[i] = 0;
+    }
+    dst->offset = src->offset;
+}

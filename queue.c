@@ -132,6 +132,7 @@ void *queue_job_thread_encode(void *param)
     else
         result = lz77_encode(job->block->block,job->window_size,NULL);
     block_update(job->block,job->window_size,result);
+    bit_string_destroy(result);
     job->status = JOB_STATUS_DONE;
     pthread_mutex_lock(&job->queue->cv_mutex);
     pthread_cond_signal(&job->queue->cv);

@@ -6,7 +6,7 @@ block_t *block_init(bit_string_t *b,block_t *prev, int num_block)
     block->block = b;
     block->prev_block = prev;
     block->next_block = NULL;
-    block->result = NULL;
+    block->result = bit_string_init(b->size * 4);;
     block->num_block = num_block;
     block->best_window_size = 0;
     block->checked_window_sizes = 0;
@@ -28,12 +28,8 @@ void block_update(block_t *block,size_t window_size, bit_string_t *result)
 {
     pthread_mutex_lock(&block->mutex);
     block->checked_window_sizes++;
-    if(block->result == NULL) {
-        block->result = result;
-        block->best_window_size = window_size;
-    } else if(block->result->offset > result->offset) {
-        bit_string_destroy(block->result);
-        block->result = result;
+    if(block->result->offset == 0 || block->result->offset > result->offset) {
+        bit_string_full_copy(result,block->result);
         block->best_window_size = window_size;
     }
     pthread_mutex_unlock(&block->mutex);
