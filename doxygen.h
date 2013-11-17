@@ -7,6 +7,15 @@
  * source file. */
 
 /**
+ * \defgroup block block
+ * \details
+ * Block represents a single block of data from file. It includes data, best
+ * compressed variant of data and best window size. It also includes a mutex
+ * that is used for thread safety and pointers to next and previous blocks
+ * (so all blocks form a double linked list)
+ */
+
+/**
  * \defgroup cfc cfc
  * \details
  * This is implementation of Comma Free Coding algorithm of storing binary number.
@@ -32,6 +41,15 @@
  * \defgroup lz77 lz77
  * \details
  * This is a reference Lempel Ziv 77 algrorithm implementation.
+ */
+
+/**
+ * \defgroup queue queue
+ * \details
+ * Queue is a queue of compression jobs. Each job tries to compress block of
+ * data using some window size. After compressing block is updated with new
+ * results. Jobs run asynchronously and number of max threads can be specified
+ * when running queue.
  */
 
 /**
