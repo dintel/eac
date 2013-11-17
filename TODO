@@ -1,8 +1,0 @@
-* Test initial window sizes from 2^10 to 2^32
-* Test with both B = nw and B = nw*2
-* Add uncompressed video test files
-* Add more test case files with random
-* Add timing tests for different nw,B and window size parameters
-* Add graph generation for timing tests results
-* Test with block significantly larger then nw (up to x16)
-* Think about impoving algorithm by allowing coding of sequences on boundaries of blocks
