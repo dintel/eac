@@ -11,9 +11,10 @@
 #include "queue.h"
 #include "block.h"
 
-#define DEFAULT_BLOCK_SIZE 8192
+#define DEFAULT_BLOCK_SIZE 32768
 #define DEFAULT_WINDOW_SIZE 32768
-#define INITIAL_NW 32768
+#define MIN_NW 8
+#define MAX_NW 262144
 #define MAX_NW_DELTA 15
 #define NW_DELTA_BITS 5
 #define DEFAULT_THREADS 8
@@ -212,7 +213,7 @@ int main(int argc, char *argv[])
             block = block_init(buffer_string,prev_block,num++);
             if(first == NULL)
                 first = block;
-            for(int i = 2; i <= INITIAL_NW && i <= arguments.block_size * 8; i *= 2 ) {
+            for(int i = MIN_NW; i <= MAX_NW && i <= arguments.block_size * 8; i *= 2 ) {
                 queue_add_job(queue,block,i);
             }
             prev_block = block;

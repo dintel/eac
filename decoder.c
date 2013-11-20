@@ -8,8 +8,9 @@
 #include "lz77.h"
 #include "log.h"
 
-#define DEFAULT_BLOCK_SIZE 8192
-#define MAX_NW 32768
+#define DEFAULT_BLOCK_SIZE 32768
+#define MIN_NW 8
+#define MAX_NW 262144
 #define MAX_NW_DELTA 15
 #define NW_DELTA_BITS 5
 #define MAX_RATIO 400
