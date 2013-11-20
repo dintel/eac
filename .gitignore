@@ -3,6 +3,7 @@ eac_decode
 test
 test.*
 tests/result*
+viewer/result.json
 *.o
 doc/html
 doc/latex

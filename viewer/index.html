@@ -1,0 +1,116 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>EAC results viewer</title>
+
+    <!-- Styles -->
+    <link href="css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="css/prettify.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="css/style.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css">
+    <link href="css/jquery.jqplot.min.css" media="screen" rel="stylesheet" type="text/css">
+    <style type="text/css">
+     .bootstrap-growl {
+       box-shadow: 2px 2px 5px #888888;
+     }
+     #chart {
+       margin-left: auto;
+       margin-right: auto;
+       width: 90%;
+       height: 70%;
+     }
+    </style>
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery.bootstrap-growl.min.js"></script>
+    <!--[if lt IE 9]><script type="text/javascript" src="js/html5.js"></script><![endif]-->
+    <!--[if lt IE 9]><script type="text/javascript" src="js/excanvas.js"></script><![endif]-->
+    <script type="text/javascript" src="js/jquery.jqplot.min.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.pointLabels.min.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.logAxisRenderer.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasAxisLabelRenderer.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.highlighter.min.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.cursor.min.js"></script>
+    <script type="text/javascript" src="js/jqplot_plugins/jqplot.canvasAxisTickRenderer.js"></script>
+    <script type="text/javascript" src="result.json"></script>
+  </head>
+  <body>
+    <div>
+      <select id="file"></select>
+      <button class="btn button-reset" type="button">Reset zoom</button>
+    </div>
+    <div id="chart"></div>
+    
+    <script type="text/javascript">
+     function parse(csv) {
+         var rows = csv.split("\n");
+         var result = [];
+         for(row in rows) {
+             cells = row.split(";");
+             if(cells[3] == 'lz77') {
+                 result[cells[0]][cells[3]].push([parseInt(cells[2]), parseFloat(cells[9])]);
+                 $('<option value="'+cells[0]+'">'+cells[0]+'</option>').appendTo($("select"));
+             } else if(cells[3] == 'eac') {
+                 result[cells[0]][cells[3]].push([parseInt(cells[1]), parseFloat(cells[9])]);
+                 $('<option value="'+cells[0]+'">'+cells[0]+'</option>').appendTo("#file");
+             }
+         }
+         return result;
+     }
+
+     function startup(csv) {
+         for(file in data) {
+             $('<option value="'+file+'">'+file+'</option>').appendTo("#file");
+         }
+         var s1 = data[Object.keys(data)[0]].lz77;
+         var s2 = data[Object.keys(data)[0]].eac;
+         plot = $.jqplot('chart',[s1,s2],{
+             title: 'Compression ratio',
+             seriesDefaults:{
+                 rendererOptions: {
+                 },
+             },
+             series:[
+                 {label:'LZ77'},
+                 {label:'EAC'}
+             ],
+             axes: {
+                 xaxis: {
+                     label: 'Window size / Block size',
+                     renderer: $.jqplot.LogAxisRenderer,
+                     ticks: [ 2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,262144 ],
+                 },
+                 yaxis: {
+                     label: '<center>Compression rate</center>',
+                 }
+             },
+             legend: {
+                 show: true,
+                 location: 'nw',
+                 placement: 'insideGrid'
+             },
+             highlighter: {
+                 show: true,
+                 sizeAdjust: 7.5
+             },
+             cursor: {
+                 show: true,
+                 zoom: true, 
+                 showTooltip:false
+             } 
+         });
+         $("#file").change(function(){
+             console.log(data[this.value]);
+             plot.series[0].data = data[this.value].lz77;
+             plot.series[1].data = data[this.value].eac;
+             plot.replot({resetAxes:true});
+         });
+         $('.button-reset').click(function() { plot.replot({resetAxes:true}); });
+     }
+
+     $(document).ready(startup);
+    </script>
+  </body>
+</html>
