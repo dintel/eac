@@ -1,5 +1,6 @@
 eac_encode
 eac_decode
+entropy_calc
 test
 test.*
 tests/result*
