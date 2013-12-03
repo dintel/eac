@@ -5,21 +5,8 @@
 
     <!-- Styles -->
     <link href="css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
-    <link href="css/prettify.css" media="screen" rel="stylesheet" type="text/css">
-    <link href="css/style.css" media="screen" rel="stylesheet" type="text/css">
     <link href="css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css">
     <link href="css/jquery.jqplot.min.css" media="screen" rel="stylesheet" type="text/css">
-    <style type="text/css">
-     .bootstrap-growl {
-       box-shadow: 2px 2px 5px #888888;
-     }
-     #chart {
-       margin-left: auto;
-       margin-right: auto;
-       width: 90%;
-       height: 70%;
-     }
-    </style>
 
     <!-- Scripts -->
     <script type="text/javascript" src="js/jquery.min.js"></script>
@@ -34,14 +21,27 @@
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.logAxisRenderer.min.js"></script>
     <script type="text/javascript" src="js/jqplot_plugins/jqplot.pointLabels.min.js"></script>
     <script type="text/javascript" src="result.json"></script>
+
+    <style type="text/css">
+      #chart {
+        height: 75%;
+      }
+    </style>
   </head>
   <body>
-    <div>
-      <select id="file"></select>
-      <button class="btn button-reset" type="button">Reset zoom</button>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12">
+          <h1>EAC testing result viewer</h1>
+          <form class="form-inline">
+            <label>File:</label>
+            <select id="file"></select>
+            <button class="btn button-reset" type="button">Reset zoom</button>
+          </form>
+          <div id="chart"></div>
+        </div>
+      </div>
     </div>
-    <div id="chart"></div>
-    
     <script type="text/javascript">
      function parse(csv) {
          var rows = csv.split("\n");
@@ -66,7 +66,7 @@
          var s1 = data[Object.keys(data)[0]].lz77;
          var s2 = data[Object.keys(data)[0]].eac;
          plot = $.jqplot('chart',[s1,s2],{
-             title: 'Compression ratio',
+             title: 'Testing results',
              seriesDefaults:{
                  rendererOptions: {
                  },
@@ -82,7 +82,7 @@
                      ticks: [ 2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,262144 ],
                  },
                  yaxis: {
-                     label: '<center>Compression rate</center>',
+                     label: '<center>Compression ratio</center>',
                  }
              },
              legend: {
