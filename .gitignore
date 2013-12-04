@@ -1,6 +1,7 @@
 eac_encode
 eac_decode
 entropy_calc
+generator
 test
 test.*
 tests/result*
