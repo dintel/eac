@@ -7,16 +7,13 @@
 #include "bit_string_writer.h"
 #include "lz77.h"
 #include "log.h"
+#include "delta.h"
 
 #define DEFAULT_BLOCK_SIZE 32768
-#define MIN_NW 8
-#define MAX_NW 262144
-#define MAX_NW_DELTA 15
-#define NW_DELTA_BITS 5
 #define MAX_RATIO 400
 
 /** Decoder version  */
-const char *argp_program_version = "eac_decode 0.1";
+const char *argp_program_version = "eac_decode 0.2";
 /** Email to send decoder bug reports */
 const char *argp_program_bug_address = "<dmitry.zbarski@gmail.com>";
 
@@ -118,23 +115,6 @@ bit_string_t *convert(uint8_t *src, size_t size)
     return result;
 }
 
-/**
- * \brief Calculate new window size
- *
- * Calculate new window size based on current window size and delta
- * value. Delta value is how many bits should be shifted right/left.
- * \param prev current window size
- * \param delta delta of window size \f$\delta = \log_2\left(\frac{\max\{nw_{n-1},nw_n\}}{\min\{nw_{n-1},nw_n\}}\right)\f$
- * \return new window size
- */
-int delta_nw_inv(int prev, uint8_t delta)
-{
-    if(delta > MAX_NW_DELTA) {
-        return prev >> (delta - MAX_NW_DELTA);
-    }
-    return prev << delta;
-}
-
 int main(int argc, char *argv[])
 {
     struct dec_arguments arguments;
@@ -202,10 +182,10 @@ int main(int argc, char *argv[])
             window = bit_string_substr(tmp,0,tmp->offset);
             bit_string_writer_write(writer,tmp);
             bit_string_destroy(tmp);
-            if(bs->offset >= (enc_size + NW_DELTA_BITS) && arguments.eac) {
-                byte = bit_string_read_byte(bs,enc_size,NW_DELTA_BITS);
-                window_size = delta_nw_inv(window_size,byte);
-                enc_size += NW_DELTA_BITS;
+            if(bs->offset >= (enc_size + NW_BITS) && arguments.eac) {
+                byte = bit_string_read_byte(bs,enc_size,NW_BITS);
+                window_size = nw_change_decode(window_size,byte);
+                enc_size += NW_BITS;
             }
             if(bs->offset < enc_size)
                 tmp = bit_string_substr(bs,enc_size,0);

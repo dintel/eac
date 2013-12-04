@@ -22,8 +22,8 @@ ENCODER = eac_encode
 DECODER = eac_decode
 GENERATOR = generator
 ENTROPY_CALC = entropy_calc
-ENCODER_OBJECTS = encoder.o lz77.o cfc.o bit_string.o bit_string_writer.o log.o queue.o block.o
-DECODER_OBJECTS = decoder.o lz77.o cfc.o bit_string.o bit_string_writer.o log.o
+ENCODER_OBJECTS = encoder.o lz77.o cfc.o bit_string.o bit_string_writer.o log.o queue.o block.o delta.o
+DECODER_OBJECTS = decoder.o lz77.o cfc.o bit_string.o bit_string_writer.o log.o delta.o
 GENERATOR_OBJECTS = generator.o bit_string.o bit_string_writer.o log.o
 ENTROPY_CALC_OBJECTS = entropy_calc.o log.o
 

@@ -10,17 +10,14 @@
 #include "log.h"
 #include "queue.h"
 #include "block.h"
+#include "delta.h"
 
 #define DEFAULT_BLOCK_SIZE 32768
 #define DEFAULT_WINDOW_SIZE 32768
-#define MIN_NW 8
-#define MAX_NW 262144
-#define MAX_NW_DELTA 15
-#define NW_DELTA_BITS 5
 #define DEFAULT_THREADS 8
 
 /** Encoder version */
-const char *argp_program_version = "eac_encode 0.1";
+const char *argp_program_version = "eac_encode 0.2";
 /** Email to send encoder bug reports */
 const char *argp_program_bug_address = "<dmitry.zbarski@gmail.com>";
 
@@ -131,25 +128,6 @@ bit_string_t *convert(uint8_t *src, size_t size)
     return result;
 }
 
-/**
- * \brief Calculate delta of window sizes
- *
- * Calculate delta between window size changes. Delta value is how many bits
- * should be shifted right/left. \f$\delta = \log_2\left(\frac{\max\{nw_{n-1},nw_n\}}{\min\{nw_{n-1},nw_n\}}\right)\f$
- * \param prev old window size
- * \param next new window size
- * \return delta between window sizes
- */
-uint8_t delta_nw(int prev,int next)
-{
-    if(next >= prev) {
-        PRINT_DEBUG("delta_nw window increase %d\n",(int)log2(next / prev));
-        return log2(next / prev);
-    }
-    PRINT_DEBUG("delta_nw window decrease %d\n",(int)log2(prev / next));
-    return log2(prev / next) + MAX_NW_DELTA;
-}
-
 int main(int argc, char *argv[])
 {
     struct enc_arguments arguments;
@@ -222,9 +200,9 @@ int main(int argc, char *argv[])
         block = first;
         while(block != NULL) {
             if(block->prev_block != NULL) {
-                int delta = delta_nw(block->prev_block->best_window_size,block->best_window_size);
-                bit_string_writer_write_byte(writer,delta,NW_DELTA_BITS);
-                compressed_size += NW_DELTA_BITS;
+                uint8_t delta = nw_change_encode(block->prev_block->best_window_size,block->best_window_size);
+                bit_string_writer_write_byte(writer,delta,NW_BITS);
+                compressed_size += NW_BITS;
             }
             PRINT_VERBOSE("Block %d - best window size %zu compressed size %zu ratio %f\n", block->num_block, block->best_window_size, block->result->offset, (float)block->block->offset / block->result->offset);
             bit_string_writer_write(writer,block->result);
