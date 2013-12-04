@@ -3,7 +3,7 @@
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 
-for FILE in `find files/ -size -40k -size +4095c -type f -not -name .gitignore -printf '%f\n'`; do
+for FILE in `find files/ -size -50k -size +32k -type f -not -name .gitignore -printf '%f\n'`; do
     ../eac_encode -i files/$FILE -o test.lz77 $1 > /dev/null &
     ../eac_encode -i files/$FILE -o test.eac -e $1 > /dev/null &
     wait
