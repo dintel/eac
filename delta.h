@@ -3,11 +3,21 @@
 
 #include <stdint.h>
 
+/** Minimal window size allowed */
 #define MIN_NW 8
+
+/** Maximal window size allowed */
 #define MAX_NW 262144
 
+/** Maximum delta of log2 of window size (currently not used) */
 #define MAX_NW_DELTA 15
+
+/** Number of bits used by encoded window size change */
 #define NW_BITS 5
+
+/** \addtogroup delta_nw
+ * @{
+ */
 
 /**
  * \brief Output encoded change in window size
@@ -34,5 +44,6 @@ uint8_t nw_change_encode(int prev,int next);
  */
 int nw_change_decode(int prev, uint8_t delta);
 
+/** @} */
 
 #endif

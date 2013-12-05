@@ -7,6 +7,22 @@
  * source file. */
 
 /**
+ * \defgroup bit_string bit_string
+ * \details
+ * This is implementation of bit string. Internally they store data using array
+ * of bytes, but provide interface for easy access and manipulation of bits.
+ */
+
+/**
+ * \defgroup bit_string_writer bit_string_writer
+ * \details
+ * Writer that allows writing of bit strings into file. Since file abstraction
+ * layer does not allow writing less than a byte into file, writer has buffer
+ * where it keeps unwritten bits. When bit string writer is closed, bits in
+ * buffer are padded with zeroes and written to file.
+ */
+
+/**
  * \defgroup block block
  * \details
  * Block represents a single block of data from file. It includes data, best
@@ -22,19 +38,12 @@
  */
 
 /**
- * \defgroup bit_string bit_string
+ * \defgroup delta_nw delta_nw
  * \details
- * This is implementation of bit string. Internally they store data using array
- * of bytes, but provide interface for easy access and manipulation of bits.
- */
-
-/**
- * \defgroup bit_string_writer bit_string_writer
- * \details
- * Writer that allows writing of bit strings into file. Since file abstraction
- * layer does not allow writing less than a byte into file, writer has buffer
- * where it keeps unwritten bits. When bit string writer is closed, bits in
- * buffer are padded with zeroes and written to file.
+ * This module is responsible for encoding/decoding window size changes between
+ * blocks. Currently window size change is codes simply by encoding log2 of new
+ * window size between blocks. More efficient way would be to code change of
+ * this log2.
  */
 
 /**
@@ -117,14 +126,37 @@
  * \section s1 Correctness tests
  * Currently only one basic sanity testing is implemented.
  * 
- * Sanity test compress each file in tests/files directory using LZ77 and LZ77
- * EAC algorithms. After compressing, each file is decompressed and checked
- * against original file.
+ * Sanity test compresses each file in tests/files directory (limited to sizes
+ * from 32K to 50K)  using LZ77 and LZ77 EAC algorithms. After compressing, each
+ * file is decompressed and checked against original file.
  * 
  * To test run sanity.sh script.
- * \section s2 Performance tests
- * \subsection s21 Ratio comparing tests
- * \subsection s22 Time comparing tests
+ * \section s2 Performance test
+ * Additionally there is a performance.sh test that runs on all files in
+ * tests/files and tries to compress them with LZ77 with every possible window
+ * size and than LZ77 with EAC with every possible block size.
+ *
+ * During these tests each file is also decompressed and the result is checked
+ * against original file. During compress and decompress time is measured and
+ * later saved into results file.
+ *
+ * For each compress/decompress cycle following results are saved:
+ * - Filename
+ * - Block size (0 if not relevant)
+ * - Window size (0 if not relevant)
+ * - Algorithm (lz77 or eac)
+ * - Encode time
+ * - Decode time
+ * - Result (SUCCESS if decoded file matched original, FAILURE otherwise)
+ * - File size (original file size)
+ * - Compressed size (compressed file size)
+ * - Ratio (\f$= \frac{Original}{Compressed}\f$)
+ *
+ * All results are aggregated to result.csv file which is semicolon(;)
+ * separated. This file can easily be imported into Excel to analyze
+ * results. But another option to view result.csv graphically is to run
+ * jsonReport.php that converts result.csv into JSON format and saves it into
+ * viewer directory. There it can be viewed using index.html file.
  */
 
 #endif

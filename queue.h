@@ -110,4 +110,5 @@ void queue_run(queue_t *queue,int threads);
  */
 void queue_destroy_job(job_t *job);
 
+/** @} */
 #endif
