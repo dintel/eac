@@ -25,6 +25,9 @@ There are 2 binaries that are provided are compiled:
 1. `eac_encode` - this is encoder that can compress files using both LZ77 and
    EAC algorithms.
 2. `eac_decode` - this is decoder that can decode files encoded with eac_encode.
+3. `entropy_calc` - a small program that calculates binary entropy of a file.
+4. `generator` - generates file of given size with given entropy
+(approximately).
 Additionally there are a few scripts in tests directory:
 1. `sanity.sh` - sanity tests for both LZ77 and EAC encoding and
    decoding. Validates that files are properly encoded and decoded.
@@ -34,6 +37,8 @@ Additionally there are a few scripts in tests directory:
 3. `performance.sh` - script that runs `perf_single.sh` on all test files with
    all possible configuration parameters. After running all CSV report is
    generated.
+4. `jsonReport.php` - PHP script that converts `result.csv` file into
+   result.json. Stores result in `viewer/result.json`
 
 ## Documentation ##
 Internal documentation can be compiled using command `make doc`. For generating
@@ -43,3 +48,10 @@ After running `make doc` documentation will be accessible in
 * `doc/html` - in HTML format
 * `doc/latex` - in Latex format (can be compiled into PDF by running `make pdf`
   in that directory)
+
+## Graphical result viewer ##
+Simple graphical result viewer is written using HTML/CSS/JS. It uses
+[jqPlot](http://www.jqplot.com/) to show data as graph. To use graphical viewer
+`result.csv` must be first converted into `result.json`. For this there is a
+script called `jsonReport.php` in `tests/` directory. After running it using
+graphical viewer is as simple as opening `viewer/index.html` in browser.
