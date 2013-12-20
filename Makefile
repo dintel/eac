@@ -47,7 +47,7 @@ $(ENTROPY_CALC): $(ENTROPY_CALC_OBJECTS)
 	$(CC) $(COFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(ENCODER) $(DECODER) *.o
+	rm -f $(ENCODER) $(DECODER) $(GENERATOR) $(ENTROPY_CALC) *.o
 
 tags: *.c *.h
 	etags *.c *.h
