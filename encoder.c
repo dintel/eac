@@ -171,6 +171,7 @@ int main(int argc, char *argv[])
     bit_string_t *buffer_string;
     int buffer_size;
     long file_size = 0, compressed_size = 0;
+    size_t *longest_match, longest_match_size, max_longest_match = 0;
     bit_string_writer_t *writer = bit_string_writer_init(outfile);
 
     if(arguments.eac) {
@@ -181,6 +182,7 @@ int main(int argc, char *argv[])
         int num = 0;
 
         buffer = malloc(sizeof(uint8_t) * arguments.block_size);
+        longest_match_size = 0;
         
         while(!feof(file)) {
             buffer_size = fread(buffer,sizeof(uint8_t),arguments.block_size,file);
@@ -195,10 +197,20 @@ int main(int argc, char *argv[])
                 queue_add_job(queue,block,i);
             }
             prev_block = block;
+            longest_match_size++;
+        }
+        longest_match = malloc(sizeof(size_t) * longest_match_size);
+        if(longest_match == NULL) {
+            printf("Failed allocating memory for longest_match\n");
+            return EXIT_FAILURE;
         }
         queue_run(queue,arguments.threads);
         block = first;
         while(block != NULL) {
+            longest_match[block->num_block] = block->longest_match;
+            if(max_longest_match < block->longest_match) {
+                max_longest_match = block->longest_match;
+            }
             if(block->prev_block != NULL) {
                 uint8_t delta = nw_change_encode(block->prev_block->best_window_size,block->best_window_size);
                 bit_string_writer_write_byte(writer,delta,NW_BITS);
@@ -219,13 +231,20 @@ int main(int argc, char *argv[])
         queue_destroy(queue);
     } else {
         bit_string_t *lz77_string;
+        longest_match_size = 1;
+        longest_match = malloc(sizeof(size_t));
+        if(longest_match == NULL) {
+            printf("Failed allocating memory for longest_match\n");
+            return EXIT_FAILURE;
+        }
         fseek(file,0L,SEEK_END);
         file_size = ftell(file);
         fseek(file,0L,SEEK_SET);
         buffer = malloc(sizeof(uint8_t) * file_size);
         buffer_size = fread(buffer,sizeof(uint8_t),file_size,file);
         buffer_string = convert(buffer,buffer_size);
-        lz77_string = lz77_encode(buffer_string,arguments.window_size,NULL);
+        lz77_string = lz77_encode(buffer_string,arguments.window_size,NULL,longest_match);
+        max_longest_match = *longest_match;
         PRINT_VERBOSE("Compressed using window size %zu compressed size %zu ratio %f\n", arguments.window_size, lz77_string->offset, (float)buffer_string->offset / lz77_string->offset);
         compressed_size += lz77_string->offset;
         file_size = buffer_string->offset;
@@ -243,8 +262,12 @@ int main(int argc, char *argv[])
     }
 
     compressed_size += bit_string_writer_flush(writer);
-    printf("%ld;%ld;%f\n",file_size,compressed_size, (double)file_size / compressed_size);
+    printf("%ld;%ld;%f;%zu;",file_size,compressed_size, (double)file_size / compressed_size, max_longest_match);
 
+    for(int i=0; i < longest_match_size; ++i) {
+        printf("%zu ",longest_match[i]);
+    }
+    
     bit_string_writer_destroy(writer);
 
     fclose(file);

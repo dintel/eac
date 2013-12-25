@@ -128,11 +128,12 @@ void *queue_job_thread_encode(void *param)
 {
     job_t *job = (job_t *)param;
     bit_string_t *result;
+    size_t longest_match;
     if(job->block->prev_block != NULL)
-        result = lz77_encode(job->block->block,job->window_size,job->block->prev_block->block);
+        result = lz77_encode(job->block->block,job->window_size,job->block->prev_block->block,&longest_match);
     else
-        result = lz77_encode(job->block->block,job->window_size,NULL);
-    block_update(job->block,job->window_size,result);
+        result = lz77_encode(job->block->block,job->window_size,NULL,&longest_match);
+    block_update(job->block,job->window_size,result,longest_match);
     bit_string_destroy(result);
     job->status = JOB_STATUS_DONE;
     pthread_mutex_lock(&job->queue->cv_mutex);

@@ -24,13 +24,14 @@ void block_destroy(block_t *block)
     free(block);
 }
 
-void block_update(block_t *block,size_t window_size, bit_string_t *result)
+void block_update(block_t *block,size_t window_size, bit_string_t *result, size_t longest_match)
 {
     pthread_mutex_lock(&block->mutex);
     block->checked_window_sizes++;
     if(block->result->offset == 0 || block->result->offset > result->offset) {
         bit_string_full_copy(result,block->result);
         block->best_window_size = window_size;
+        block->longest_match = longest_match;
     }
     pthread_mutex_unlock(&block->mutex);
 }

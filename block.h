@@ -28,6 +28,7 @@ typedef struct block_t {
     size_t best_window_size;     /**< window size used to get best result */
     size_t checked_window_sizes; /**< number of window sizes that were checked */
     pthread_mutex_t mutex;       /**< mutex that is locked to change block */
+    size_t longest_match;        /**< longest match length */
 } block_t;
 
 /**
@@ -59,8 +60,9 @@ void block_destroy(block_t *block);
  * \param block block to update
  * \param window_size window size of new result
  * \param result new result
+ * \param longest_match longest match length
  */
-void block_update(block_t *block,size_t window_size, bit_string_t *result);
+void block_update(block_t *block,size_t window_size, bit_string_t *result, size_t longest_match);
 
 /**
  * \brief Check whether block is completed

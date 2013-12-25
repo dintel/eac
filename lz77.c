@@ -1,12 +1,13 @@
 #include "lz77.h"
 
-bit_string_t *lz77_encode(bit_string_t *src, size_t nw, bit_string_t *window)
+bit_string_t *lz77_encode(bit_string_t *src, size_t nw, bit_string_t *window, size_t *longest_match)
 {
     bit_string_t *result = bit_string_init(src->size * 4);
     size_t offset = nw;         /* Next bit to code */
     size_t first = nw;          /* First bit that was not coded yet */
     size_t lognw = ceil(log2(nw));
     size_t best_match, best_offset, current_match;
+    size_t tmp_longest_match = 0;
     
     if(window == NULL) {
         /* Write first nw bits as is without compression                     */
@@ -49,6 +50,9 @@ bit_string_t *lz77_encode(bit_string_t *src, size_t nw, bit_string_t *window)
             }
         }
         PRINT_DEBUG("lz77_encode best_match %zu best_offset %zu\n",best_match,best_offset);
+        if(tmp_longest_match < best_match) {
+            tmp_longest_match = best_match;
+        }
         if(best_match > lognw) {
             if(first != offset) {
                 bit_string_concat_and_destroy(result, cfc_encode(offset - first));
@@ -69,6 +73,10 @@ bit_string_t *lz77_encode(bit_string_t *src, size_t nw, bit_string_t *window)
         PRINT_DEBUG("lz77_encode write %zu last bits\n",offset - first);
         bit_string_concat_and_destroy(result, cfc_encode(offset - first));
         bit_string_copy(result,src,first,offset - first);
+    }
+
+    if(longest_match != NULL) {
+        *longest_match = tmp_longest_match;
     }
 
     if(window != NULL) {

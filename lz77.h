@@ -23,9 +23,11 @@
  * \param src source bit string to encode
  * \param nw window size to use when coding
  * \param window window from previous block or NULL if first block is encoded
+ * \param longest_match output parameter which indicates longest match found
+ * during encoding
  * \return new bit string holding encoded data
  */
-bit_string_t *lz77_encode(bit_string_t *src, size_t nw, bit_string_t *window);
+bit_string_t *lz77_encode(bit_string_t *src, size_t nw, bit_string_t *window, size_t *longest_match);
 
 /**            
  * \brief Decode block bit string using LZ77
