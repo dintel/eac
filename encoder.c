@@ -4,6 +4,7 @@
 #include <time.h>
 #include <argp.h>
 #include <unistd.h>
+#include <math.h>
 #include "bit_string.h"
 #include "bit_string_writer.h"
 #include "lz77.h"
@@ -261,13 +262,27 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    long avg_longest_match = 0;
+    for(int i=0; i < longest_match_size; ++i) {
+        avg_longest_match += longest_match[i];
+    }
+    avg_longest_match /= longest_match_size;
+
+    long std_dev_longest_match = 0;
+    for(int i=0; i < longest_match_size; ++i) {
+        std_dev_longest_match += (avg_longest_match - longest_match[i]) * (avg_longest_match - longest_match[i]);
+    }
+    std_dev_longest_match /= longest_match_size;
+    std_dev_longest_match = sqrt(std_dev_longest_match);
+
     compressed_size += bit_string_writer_flush(writer);
-    printf("%ld;%ld;%f;%zu;",file_size,compressed_size, (double)file_size / compressed_size, max_longest_match);
+    printf("%ld;%ld;%f;%zu;%ld;%ld;",file_size,compressed_size, (double)file_size / compressed_size, max_longest_match,avg_longest_match,std_dev_longest_match);
 
     for(int i=0; i < longest_match_size; ++i) {
+        avg_longest_match += longest_match[i];
         printf("%zu ",longest_match[i]);
     }
-    
+
     bit_string_writer_destroy(writer);
 
     fclose(file);

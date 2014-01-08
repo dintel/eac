@@ -30,7 +30,7 @@ if [[ -s $RESULT_FILE ]]; then
     mv $RESULT_FILE result-$DATE.csv
 fi
 
-echo "Filename;Block size;Window size;Algorithm;Encode time;Decode time;Result;File size;Compressed size;Ratio;File longest match;Block longest match" > $RESULT_FILE
+echo "Filename;Block size;Window size;Algorithm;Encode time;Decode time;Result;File size;Compressed size;Ratio;File longest match;Average longest match;Std deviation of longest match;Block longest match" > $RESULT_FILE
 for FILE in `find results/ -type f`; do
     cat $FILE >> $RESULT_FILE
 done
