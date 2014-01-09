@@ -23,7 +23,7 @@
     <script type="text/javascript" src="result.json"></script>
 
     <style type="text/css">
-      #chart {
+      .chart {
         height: 75%;
       }
     </style>
@@ -38,7 +38,9 @@
             <select id="file"></select>
             <button class="btn button-reset" type="button">Reset zoom</button>
           </form>
-          <div id="chart"></div>
+          <div class="chart" id="chart"></div>
+          <div class="chart" id="chart2"></div>
+          <div class="chart" id="chart3"></div>
         </div>
       </div>
     </div>
@@ -63,8 +65,8 @@
          for(file in data) {
              $('<option value="'+file+'">'+file+'</option>').appendTo("#file");
          }
-         var s1 = data[Object.keys(data)[0]].lz77;
-         var s2 = data[Object.keys(data)[0]].eac;
+         var s1 = data[Object.keys(data)[0]].lz77.data;
+         var s2 = data[Object.keys(data)[0]].eac.data;
          plot = $.jqplot('chart',[s1,s2],{
              title: 'Testing results',
              seriesDefaults:{
@@ -79,7 +81,7 @@
                  xaxis: {
                      label: 'Window size / Block size',
                      renderer: $.jqplot.LogAxisRenderer,
-                     ticks: [ 2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,262144 ],
+                     ticks: [ 4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,262144 ],
                  },
                  yaxis: {
                      label: '<center>Compression ratio</center>',
@@ -100,13 +102,89 @@
                  showTooltip:false
              } 
          });
+         plot2 = $.jqplot('chart2',[data[Object.keys(data)[0]].lz77.longest_match,data[Object.keys(data)[0]].eac.longest_match],{
+             title: 'Longest match',
+             seriesDefaults:{
+                 rendererOptions: {
+                 },
+             },
+             series:[
+                 {label:'LZ77'},
+                 {label:'EAC'}
+             ],
+             axes: {
+                 xaxis: {
+                     label: 'Window size / Block size',
+                     renderer: $.jqplot.LogAxisRenderer,
+                     ticks: [ 4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,262144 ],
+                 },
+                 yaxis: {
+                     label: '<center>Longest match length</center>',
+                 }
+             },
+             legend: {
+                 show: true,
+                 location: 'nw',
+                 placement: 'insideGrid'
+             },
+             highlighter: {
+                 show: true,
+                 sizeAdjust: 7.5
+             },
+             cursor: {
+                 show: true,
+                 zoom: true, 
+                 showTooltip:false
+             } 
+         });
+         plot3 = $.jqplot('chart3',[data[Object.keys(data)[0]].eac.avg_longest_match,data[Object.keys(data)[0]].eac.deviation],{
+             title: 'Average longest match and deviation',
+             seriesDefaults:{
+                 rendererOptions: {
+                 },
+             },
+             series:[
+                 {label:'Avg. longest match'},
+                 {label:'Std. deviation'}
+             ],
+             axes: {
+                 xaxis: {
+                     label: 'Block size',
+                     renderer: $.jqplot.LogAxisRenderer,
+                     ticks: [ 32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536,131072,262144 ],
+                 },
+                 yaxis: {
+                     label: '<center>Bits</center>',
+                 }
+             },
+             legend: {
+                 show: true,
+                 location: 'nw',
+                 placement: 'insideGrid'
+             },
+             highlighter: {
+                 show: true,
+                 sizeAdjust: 7.5
+             },
+             cursor: {
+                 show: true,
+                 zoom: true, 
+                 showTooltip:false
+             } 
+         });
          $("#file").change(function(){
              console.log(data[this.value]);
-             plot.series[0].data = data[this.value].lz77;
-             plot.series[1].data = data[this.value].eac;
+             plot.series[0].data = data[this.value].lz77.data;
+             plot.series[1].data = data[this.value].eac.data;
              plot.replot({resetAxes:true});
+             plot2.series[0].data = data[this.value].lz77.longest_match;
+             plot2.series[1].data = data[this.value].eac.longest_match;
+             plot2.replot({resetAxes:true});
+             plot3.series[0].data = data[this.value].eac.avg_longest_match;
+             plot3.series[1].data = data[this.value].eac.deviation;
+             plot3.replot({resetAxes:true});
          });
-         $('.button-reset').click(function() { plot.replot({resetAxes:true}); });
+         $('.button-reset').click(function() { plot.replot({resetAxes:true}); plot2.replot({resetAxes:true}); plot3.replot({resetAxes:true}); });
      }
 
      $(document).ready(startup);

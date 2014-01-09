@@ -62,7 +62,11 @@ project.
         1. Source file size
         2. Compressed file size
         3. Compression ratio
-        4. Size of longest match and average size of match per file and per block
+        4. Stats
+            1. Size of longest match in file
+            2. Average longest match in file
+            3. Standard deviation of longest match in file
+            4. Longest match per block
     2. Additionally verbose logging can be used that shows high level details of
        operation
     3. Additionally debug logging can be used that outputs result of every
