@@ -104,18 +104,32 @@
  * LZ78 on wikipedia</a>. 
  *
  * Our implementation uses \ref cfcsect. Algorithm is working as follows:
- * 1. For each chunk of \ref BLOCK_SIZE in file to encode (last chunk can be
- * less then \ref BLOCK_SIZE).
- *   1. If first chunk, write CFC(WINDW_SIZE), than window size of bits
+ * 1. For each chunk of \ref \f$BLOCK\_SIZE\f$ in file to encode (last chunk can be
+ * less then \ref \f$BLOCK\_SIZE\f$).
+ *   1. If first chunk, write \f$CFC(WINDW\_SIZE)\f$ and than \f$WINDOW\_SIZE\f$ of bits
  * of data.
  *   2. For each subsequent bit
- *     1. If skipped bits equals to log2(WINDOW_SIZE) then write pair
- * (CFC(log2(WINDOW_SIZE)),skipped_bits)
- *     2. If largest found match in previous WINDOW_SIZE bits is more than
- * log2(WINDOW_SIZE), then write uncompressed data
- * (CFC(count(ckipped_bits), skipped_bits)) and write pair
- * (CFC(length_of_match),offset_of_match)
- *     3. Else save bit into skipped_bits and continue.
+ *     1. If skipped bits equals to \f$\log_2(WINDOW\_SIZE)\f$ then write pair
+ * \f$(CFC(\log_2(WINDOW\_SIZE)),skipped\_bits)\f$
+ *     2. If largest found match in previous \f$WINDOW\_SIZE\f$ bits is more than
+ * \f$\log_2(WINDOW\_SIZE)\f$, then write uncompressed data
+ * \f$(CFC(count(skipped\_bits)), skipped\_bits)\f$ and write pair
+ * \f$(CFC(length\_of\_match),offset\_of\_match)\f$
+ *     3. Else save bit into \f$skipped\_bits\f$ and continue.
+ * \section eacsect EAC - Entropy adaptive coding
+ * Entropy adaptive coding algorithm splits file into blocks of data. Each block
+ * is then compressed separately using any available window size with LZ77
+ * algorithm to choose window size that provides most efficient compression
+ * ratio. To prevent loss of training sequence (first sliding window),
+ * initial sliding window of each block lies in previous block (except first
+ * block).
+ * 
+ * Since window size of each block can be different from previous block, change
+ * of window size is coded between blocks (we code \f$\log_2(window\ size)\f$).
+ *
+ * It's worth to note that unlike LZ77, EAC compression can be parallelized
+ * because each block can be compressed separately without compressing previous
+ * block. Further all window sizes compression tests can also be parallelized.
  */
 
 /**

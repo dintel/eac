@@ -55,3 +55,9 @@ Simple graphical result viewer is written using HTML/CSS/JS. It uses
 `result.csv` must be first converted into `result.json`. For this there is a
 script called `jsonReport.php` in `tests/` directory. After running it using
 graphical viewer is as simple as opening `viewer/index.html` in browser.
+
+## Graph images generator ##
+All graphs that can be viewed using Simple graphical result viewer, can be
+generated into image files (PNG) using PHP script `graphgen.php`. This script
+accepts `results.csv` file as parameter and generates images into `tests/images`
+directory. To work correctly this script requires PHP version 5.4 or later.
